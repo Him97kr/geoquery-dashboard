@@ -1,0 +1,1 @@
+export const whoOutbreaksUrl = 'https://www.who.int/emergencies/disease-outbreak-news/item/'
