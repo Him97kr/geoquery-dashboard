@@ -90,7 +90,7 @@ Pages
 | Project | Description |
 |---|---|
 | [GeoQuery](https://github.com/Him97kr/geoquery) | Go GraphQL API that powers this frontend |
-| [GeoVitals](https://github.com/Him97kr/geovitals) | Chrome extension exploring similar country data |
+| [GeoVitals](https://github.com/Him97kr/chrome-extension-geovitals) | Chrome extension exploring similar country data |
 | [World Population Dashboard](https://github.com/Him97kr/world-population-dashboard) | D3.js population visualisation |
 
 ---
