@@ -9,7 +9,7 @@
 [![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.4-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
 
 ## 🌐 Live Demo
-https://Him97kr.github.io/geoquery-frontend
+https://Him97kr.github.io/geoquery-dashboard
 
 ---
 
