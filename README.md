@@ -8,6 +8,9 @@
 [![D3](https://img.shields.io/badge/D3.js-7.0-F9A03C?logo=d3dotjs)](https://d3js.org)
 [![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.4-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
 
+## 🌐 Live Demo
+https://Him97kr.github.io/geoquery-frontend
+
 ---
 
 ## ✨ Features
@@ -27,7 +30,7 @@
 
 ### Prerequisites
 - Node.js 18+
-- [GeoQuery API](https://github.com/Him97kr/geoquery) running on `localhost:8080`
+- [GeoQuery API](https://github.com/Him97kr/geoquery) running on `geoquery-production.up.railway.app`
 
 ```bash
 # Clone

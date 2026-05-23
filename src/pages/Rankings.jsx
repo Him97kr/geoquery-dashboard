@@ -67,7 +67,7 @@ export default function Rankings() {
   // Displayed top N — sliced from fetched 20
   const displayedPop   = topPopulation.slice(0, limit);
   const displayedCovid = topCovid.slice(0, limit);
-console.log("lineData", lineData);
+
   return (
     <div className="space-y-6">
       {/* Header */}
