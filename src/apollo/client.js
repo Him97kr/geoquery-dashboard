@@ -2,7 +2,7 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
 const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_GRAPHQL_URL || "http://localhost:8080/graphql",
+  uri: import.meta.env.VITE_GRAPHQL_URL,
 });
 
 export const client = new ApolloClient({
@@ -16,6 +16,6 @@ export const client = new ApolloClient({
   }),
   defaultOptions: {
     watchQuery: { fetchPolicy: "cache-first" },
-    query:      { fetchPolicy: "cache-first" },
+    query: { fetchPolicy: "cache-first" },
   },
 });
