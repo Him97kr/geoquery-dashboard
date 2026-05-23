@@ -8,8 +8,52 @@
 [![D3](https://img.shields.io/badge/D3.js-7.0-F9A03C?logo=d3dotjs)](https://d3js.org)
 [![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.4-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
 
-## 🌐 Live Demo
-https://Him97kr.github.io/geoquery-dashboard
+---
+
+## 🌐 Live
+
+| | URL |
+|---|---|
+| **Dashboard** | https://him97kr.github.io/geoquery-dashboard |
+| **GraphQL API** | https://geoquery-production.up.railway.app |
+| **GraphQL Playground** | https://geoquery-production.up.railway.app/playground |
+
+---
+
+## 🎬 Demo
+
+![GeoQuery Dashboard Demo](public/demo.gif)
+
+---
+
+## 📸 public
+
+### Home — Global Stats + World Map
+![Home](public/home.png)
+
+### Rankings — Bar Chart
+![Bar](public/rankings-bar.png)
+
+### Rankings — Bubble Chart
+![Bubble](public/rankings-bubble.png)
+
+### Rankings — Treemap
+![Treemap](public/rankings-tree.png)
+
+### Rankings — Line Chart
+![Line](public/rankings-line.png)
+
+### Explorer — Country Search & Filter
+![Explorer](public/explorer.png)
+
+### Country Detail
+![Country Detail](public/country-detail.png)
+
+### Outbreak — WHO Outbreak Alerts
+![Outbreak](public/outbreaks.png)
+
+### GraphQL Playground
+![Playground](public/playground.png)
 
 ---
 
@@ -30,7 +74,7 @@ https://Him97kr.github.io/geoquery-dashboard
 
 ### Prerequisites
 - Node.js 18+
-- [GeoQuery API](https://github.com/Him97kr/geoquery) running on `geoquery-production.up.railway.app`
+- [GeoQuery API](https://github.com/Him97kr/geoquery) running on `localhost:8080`
 
 ```bash
 # Clone
@@ -40,15 +84,26 @@ cd geoquery-dashboard
 # Install
 npm install
 
-# Set environment
-cp .env.example .env.local
-# Edit .env.local if your API runs on a different port
+# Set environment (dev)
+echo "VITE_GRAPHQL_URL=http://localhost:8080/graphql" > .env.local
 
 # Start dev server
 npm run dev
 ```
 
-Open `http://localhost:3000`
+Open `http://localhost:3000/geoquery-dashboard`
+
+---
+
+## 🚢 Deploy to GitHub Pages
+
+```bash
+# Set production API URL
+echo "VITE_GRAPHQL_URL=https://geoquery-production.up.railway.app/graphql" > .env.production
+
+# Build and deploy
+npm run deploy
+```
 
 ---
 
@@ -56,20 +111,22 @@ Open `http://localhost:3000`
 
 ```
 Redux Store
-├── countries  — fetched data (list, selected, globalStats, rankings)
-├── filters    — search, region, sort, population range
-└── ui         — chart type, map metric, toasts
+├── countries  — list, selected, globalStats, topPopulation, topCovid, outbreaks
+├── filters    — search, region, sort column, sort direction, rank limit
+└── ui         — active chart type, map metric
 
-Apollo Client
-└── Queries    — country, countries, search, globalStats, top10, outbreaks
+Apollo Client  →  GeoQuery GraphQL API (Railway)
+└── Queries: country, countries, searchCountries,
+             globalStats, topByPopulation, topByCovid,
+             countriesWithOutbreaks
     └── Synced into Redux via custom hooks (useCountryData.js)
 
-Pages
-├── Home          → useGlobalStats + ChoroplethMap
-├── Explorer      → useCountries + CountryCard grid
-├── Rankings      → useTopByPopulation + useTopByCovid + D3 charts
-├── Outbreaks     → useCountriesWithOutbreaks + ChoroplethMap
-└── CountryDetail → GET_COUNTRY query → StatCards + outbreak list
+D3.js Charts
+├── BarChart          — population, density, COVID rankings
+├── BubbleChart       — population vs density vs COVID (log axes)
+├── TreemapChart      — world population hierarchy by region
+├── LineChart         — normalized multi-metric comparison (top 20)
+└── ChoroplethMap     — world map with log-scale coloring, 3 metrics
 ```
 
 ---
@@ -79,11 +136,11 @@ Pages
 | Library | Purpose |
 |---|---|
 | React 18 | UI framework |
-| Redux Toolkit | Global state management |
-| Apollo Client | GraphQL data fetching + caching |
-| D3.js v7 | Bar, line, bubble, choropleth charts |
+| Redux Toolkit | Global state — filters, UI, cached data |
+| Apollo Client | GraphQL fetching + cache-first policy |
+| D3.js v7 | All charts and world map |
 | React Router v6 | Client-side routing |
-| Tailwind CSS v3 | Utility-first styling |
+| Tailwind CSS v3 | Utility-first dark theme styling |
 | Vite | Build tool |
 
 ---
@@ -95,6 +152,14 @@ Pages
 | [GeoQuery](https://github.com/Him97kr/geoquery) | Go GraphQL API that powers this frontend |
 | [GeoVitals](https://github.com/Him97kr/chrome-extension-geovitals) | Chrome extension exploring similar country data |
 | [World Population Dashboard](https://github.com/Him97kr/world-population-dashboard) | D3.js population visualisation |
+
+---
+
+## 👨‍💻 Author
+
+**Himanshu**
+- GitHub: [@Him97kr](https://github.com/Him97kr)
+- LinkedIn: [Himanshu Kumar](https://in.linkedin.com/in/himanshu-kumar-518b71192)
 
 ---
 
