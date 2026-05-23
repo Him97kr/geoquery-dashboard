@@ -113,18 +113,19 @@ export default function ChoroplethMap({ countries = [] }) {
 
     const activeMetric = METRICS.find((m) => m.key === metric);
 
-    // Compute max across all countries for this metric
-    const allValues = countries.map((c) => getValue(c.code));
+    // Compute values for color scale — filter zeros for log scale
+    const allValues = countries.map((c) => getValue(c.code)).filter((v) => v > 0);
+    const minVal    = d3.min(allValues) || 1;
     const maxVal    = d3.max(allValues) || 1;
 
-    // Log scale for population/cases (huge range), linear for density
-    const colorScale = metric === "density"
-      ? d3.scaleSequentialSymlog()
-          .domain([0, maxVal])
-          .interpolator(d3.interpolate("#111827", activeMetric.color))
-      : d3.scaleSequentialLog()
-          .domain([1, maxVal])
-          .interpolator(d3.interpolate("#111827", activeMetric.color));
+    // Log scale for ALL metrics — linear scale fails when outliers exist:
+    // Population: China 1.4B vs Vatican 800
+    // Density:    Monaco 26k vs Mongolia 2
+    // Cases:      USA 100M vs small islands ~0
+    const colorScale = d3.scaleSequentialLog()
+      .domain([Math.max(1, minVal), maxVal])
+      .interpolator(d3.interpolate("#1a2535", activeMetric.color))
+      .clamp(true);
 
     const geojson = topojson.feature(world, world.objects.countries);
 
