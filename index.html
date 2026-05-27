@@ -3,9 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>GeoQuery — Country Intelligence</title>
+    <title>GeoQuery Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <script>
+      // Decode redirect param set by 404.html and push to history
+      // so React Router picks up the correct route on page load
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var redirect = params.get("redirect");
+        if (redirect) {
+          // Remove ?redirect=... from URL and replace with the real path
+          var base = "/geoquery-dashboard";
+          var newPath = base + redirect;
+          window.history.replaceState(null, "", newPath);
+        }
+      })();
+    </script>
   </head>
   <body class="bg-bg text-white">
     <div id="root"></div>
