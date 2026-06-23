@@ -132,7 +132,7 @@ export default function TreemapChart({ data = [], title }) {
 
   return (
     <div className="card w-full overflow-hidden">
-      {title && <h3 className="text-sm font-semibold text-white mb-4">{title}</h3>}
+      {title && <h3 className="text-sm font-semibold text-ink mb-4">{title}</h3>}
 
       {/* Tooltip */}
       <div

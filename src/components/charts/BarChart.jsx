@@ -108,7 +108,7 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
 
   return (
     <div className="card w-full overflow-x-auto">
-      {title && <h3 className="text-sm font-semibold text-white mb-4">{title}</h3>}
+      {title && <h3 className="text-sm font-semibold text-ink mb-4">{title}</h3>}
       <svg ref={svgRef} />
     </div>
   );

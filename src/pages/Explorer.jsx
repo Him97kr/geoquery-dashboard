@@ -61,7 +61,7 @@ export default function Explorer() {
       {/* Header + controls */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">🔍 Country Explorer</h1>
+          <h1 className="text-2xl font-bold text-ink">🔍 Country Explorer</h1>
           <p className="text-muted text-sm mt-1">
             {countries.length} countries {region ? `in ${region}` : "worldwide"}
           </p>
@@ -75,14 +75,14 @@ export default function Explorer() {
             value={search}
             onChange={(e) => dispatch(setSearch(e.target.value))}
             placeholder="Search country..."
-            className="bg-card border border-border rounded-lg px-3 py-1.5 text-sm text-white placeholder-muted focus:outline-none focus:border-teal transition-colors w-44"
+            className="bg-card border border-border rounded-lg px-3 py-1.5 text-sm text-ink placeholder-muted focus:outline-none focus:border-teal transition-colors w-44"
           />
 
           {/* Region filter */}
           <select
             value={region}
             onChange={(e) => dispatch(setRegion(e.target.value))}
-            className="bg-card border border-border rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-teal transition-colors"
+            className="bg-card border border-border rounded-lg px-3 py-1.5 text-sm text-ink focus:outline-none focus:border-teal transition-colors"
           >
             <option value="">All Regions</option>
             {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}

@@ -73,7 +73,7 @@ export default function Rankings() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white">🏆 Rankings & Charts</h1>
+          <h1 className="text-2xl font-bold text-ink">🏆 Rankings & Charts</h1>
           <p className="text-muted text-sm mt-1">
             Compare countries across population, density and COVID metrics
           </p>

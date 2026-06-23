@@ -44,7 +44,7 @@ export default function CountryDetail() {
   if (error || !country) return (
     <div className="text-center py-24">
       <p className="text-4xl mb-3">🌍</p>
-      <p className="text-white font-semibold">Country not found</p>
+      <p className="text-ink font-semibold">Country not found</p>
       <p className="text-muted text-xs mt-2 font-mono">code: {code}</p>
       {error && <p className="text-red-400 text-xs mt-1 font-mono">{error.message}</p>}
       <button onClick={() => navigate("/explorer")} className="btn-ghost mt-4 text-sm">
@@ -65,7 +65,7 @@ export default function CountryDetail() {
         <div className="flex items-center gap-4">
           <span className="text-6xl">{c.flag}</span>
           <div>
-            <h1 className="text-3xl font-bold text-white">{c.name}</h1>
+            <h1 className="text-3xl font-bold text-ink">{c.name}</h1>
             <p className="text-muted font-mono text-sm mt-1">
               {c.code} · {c.capital || "N/A"} · {c.region}
             </p>
@@ -145,7 +145,7 @@ export default function CountryDetail() {
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-sm text-white">{o.title}</p>
+                    <p className="text-sm text-ink">{o.title}</p>
                     {o.summary && <p className="text-xs text-muted mt-1 leading-relaxed">{o.summary}</p>}
                   </div>
                   <span className="text-xs text-muted whitespace-nowrap">{formatDate(o.date)}</span>

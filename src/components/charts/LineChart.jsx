@@ -197,7 +197,7 @@ export default function LineChart({ data = [], title }) {
 
   return (
     <div className="card w-full overflow-x-auto">
-      {title && <h3 className="text-sm font-semibold text-white mb-4">{title}</h3>}
+      {title && <h3 className="text-sm font-semibold text-ink mb-4">{title}</h3>}
 
       <p className="text-xs text-muted mb-3 font-mono">
         All metrics normalized to 0–100 index for visual comparison. Hover dots for raw values.

@@ -30,7 +30,7 @@ export default function Home() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-ink">
           🌍 Global Overview
         </h1>
         <p className="text-muted text-sm mt-1">
@@ -64,7 +64,7 @@ export default function Home() {
               <div className="flex items-center gap-2">
                 <span className="text-2xl">{country?.flag}</span>
                 <div>
-                  <p className="font-semibold text-white text-sm group-hover:text-teal transition-colors">
+                  <p className="font-semibold text-ink text-sm group-hover:text-teal transition-colors">
                     {country?.name || "N/A"}
                   </p>
                   <p className={`text-xs font-mono ${
@@ -95,7 +95,7 @@ export default function Home() {
             className="card border border-border hover:border-teal/40 transition-all text-left group"
           >
             <span className="text-2xl mb-2 block">{icon}</span>
-            <p className="font-semibold text-white group-hover:text-teal transition-colors">{title}</p>
+            <p className="font-semibold text-ink group-hover:text-teal transition-colors">{title}</p>
             <p className="text-xs text-muted mt-1">{desc}</p>
           </button>
         ))}

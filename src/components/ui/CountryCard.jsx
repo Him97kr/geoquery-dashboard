@@ -28,7 +28,7 @@ export default function CountryCard({ country }) {
       <div className="flex items-center gap-3 mb-3">
         <span className="text-3xl">{country.flag || "🌍"}</span>
         <div>
-          <p className="font-semibold text-white group-hover:text-teal transition-colors">
+          <p className="font-semibold text-ink group-hover:text-teal transition-colors">
             {country.name}
           </p>
           <p className="text-xs text-muted font-mono">{country.code} · {country.region}</p>
