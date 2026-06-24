@@ -30,7 +30,7 @@ export default function Navbar() {
             boxShadow: "0 0 10px rgb(var(--color-teal) / 0.6)",
           }}
         />
-        <span className="text-ink">GeoQuery</span>
+        <span className="text-ink">GeoQuery Dashboard</span>
       </Link>
 
       {/* Nav links */}
