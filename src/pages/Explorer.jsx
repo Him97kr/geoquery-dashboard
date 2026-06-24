@@ -11,16 +11,16 @@ import {
   setSearch, setRegion, resetFilters,
 } from "../features/filters/filtersSlice";
 import CountryCard from "../components/ui/CountryCard";
-import Loader      from "../components/ui/Loader";
+import Loader from "../components/ui/Loader";
 
 const REGIONS = ["Africa", "Americas", "Asia", "Europe", "Oceania"];
 
 export default function Explorer() {
   const dispatch = useDispatch();
-  const search   = useSelector(selectSearch);
-  const region   = useSelector(selectRegion);
-  const sortBy   = useSelector(selectSortBy);
-  const sortDir  = useSelector(selectSortDir);
+  const search = useSelector(selectSearch);
+  const region = useSelector(selectRegion);
+  const sortBy = useSelector(selectSortBy);
+  const sortDir = useSelector(selectSortDir);
 
   const { data: searchData, loading: searchLoading } = useQuery(SEARCH_COUNTRIES, {
     variables: { query: search },
@@ -32,8 +32,8 @@ export default function Explorer() {
     skip: search.length >= 2,
   });
 
-  const loading  = search.length >= 2 ? searchLoading : allLoading;
-  const rawData  = search.length >= 2 ? searchData?.searchCountries : allData?.countries;
+  const loading = search.length >= 2 ? searchLoading : allLoading;
+  const rawData = search.length >= 2 ? searchData?.searchCountries : allData?.countries;
 
   const countries = useMemo(() => {
     if (!rawData) return [];
@@ -46,15 +46,20 @@ export default function Explorer() {
   }, [rawData, sortBy, sortDir]);
 
   const sortCols = [
-    { key: "name",       label: "Name" },
+    { key: "name", label: "Name" },
     { key: "population", label: "Population" },
-    { key: "density",    label: "Density" },
-    { key: "area",       label: "Area" },
+    { key: "density", label: "Density" },
+    { key: "area", label: "Area" },
   ];
 
   function toggleSort(key) {
     if (sortBy === key) dispatch(setSortDir(sortDir === "desc" ? "asc" : "desc"));
     else { dispatch(setSortBy(key)); dispatch(setSortDir("desc")); }
+  }
+
+  const checkValidCountry = (c) => {
+    if (region) return c.name && c.code && c.flag && c.region === region;
+    return c.name && c.code && c.flag;
   }
 
   return (
@@ -89,7 +94,7 @@ export default function Explorer() {
             className="bg-card border border-border rounded-lg px-3 py-1.5 text-sm text-ink focus:outline-none focus:border-teal transition-colors"
           >
             <option value="">All Regions</option>
-            {REGIONS.map((r) => <option key={r} value={r}>{r}</option>)}
+            {REGIONS.map((r, k) => <option key={k + r} value={r}>{r}</option>)}
           </select>
 
           {/* Reset */}
@@ -103,11 +108,10 @@ export default function Explorer() {
               <button
                 key={key}
                 onClick={() => toggleSort(key)}
-                className={`badge transition-colors ${
-                  sortBy === key
-                    ? "border-teal text-teal bg-teal/10"
-                    : "border-border text-muted hover:border-teal/40"
-                }`}
+                className={`badge transition-colors ${sortBy === key
+                  ? "border-teal text-teal bg-teal/10"
+                  : "border-border text-muted hover:border-teal/40"
+                  }`}
               >
                 {label}{sortBy === key && (sortDir === "desc" ? " ↓" : " ↑")}
               </button>
@@ -120,7 +124,7 @@ export default function Explorer() {
         ? <Loader text="Fetching countries..." />
         : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {countries.map((c) => <CountryCard key={c.code} country={c} />)}
+            {countries.map((c, k) => checkValidCountry(c) && <CountryCard key={k + c.code} country={c} />)}
             {countries.length === 0 && (
               <p className="text-muted col-span-4 text-center py-16">No countries found.</p>
             )}
