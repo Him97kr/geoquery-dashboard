@@ -28,7 +28,7 @@
 .dark {
   --color-bg: 8 9 13;
   --color-surface: 13 17 23;
-  --color-card: 17 20 28;
+  --color-card: 17 24 39;
   --color-border: 255 255 255;
   /* used at low alpha — see .card below */
   --color-teal: 0 229 160;
