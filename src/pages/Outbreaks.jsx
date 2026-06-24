@@ -46,7 +46,9 @@ export default function Outbreaks() {
               onClick={() => navigate(`/country/${country.code}`)}
               className="flex items-center gap-3 mb-3 group w-full text-left"
             >
-              <span className="text-2xl">{country.flag}</span>
+              <span className="text-2xl">
+                <img className="w-12" src={country.flag} alt={country.name} />
+              </span>
               <div>
                 <p className="font-semibold text-ink group-hover:text-teal transition-colors">
                   {country.name}

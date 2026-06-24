@@ -70,8 +70,10 @@ export default function TreemapChart({ data = [], title }) {
           .style("border", `1px solid ${t.tooltipBorder}`)
           .style("color", t.tooltipText)
           .html(`
-            <span style="font-size:18px">${d.data.flag || ""}</span>
-            <strong style="color:${t.tooltipText};margin-left:6px">${d.data.name}</strong><br/>
+            <span style="display:flex">
+            <img style="width:24px; height:16px;" src=${d.data.flag} alt=${d.data.name} />
+            <strong style="color:${t.tooltipText};margin-left:6px">${d.data.name}</strong>
+            </span>
             <span style="color:${t.muted};font-size:11px">Population: </span>
             <span style="color:${t.teal};font-size:11px">${fmt(d.data.population)}</span><br/>
             <span style="color:${t.muted};font-size:11px">Region: </span>
@@ -93,13 +95,12 @@ export default function TreemapChart({ data = [], title }) {
 
       if (w > 50 && h > 36) {
         // Flag
-        g.append("text")
-          .attr("x", w / 2)
-          .attr("y", h / 2 - (h > 55 ? 10 : 4))
-          .attr("text-anchor", "middle")
-          .attr("dominant-baseline", "middle")
-          .attr("font-size", Math.min(w, h) > 80 ? "20px" : "13px")
-          .text(d.data.flag || "");
+        g.append("image")
+          .attr("x", w / 2 - 12)
+          .attr("y", h / 2 - 16)
+          .attr("width", 24)
+          .attr("height", 16)
+          .attr("href", d.data.flag);
 
         // Country name
         if (h > 55) {

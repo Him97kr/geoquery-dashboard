@@ -64,14 +64,16 @@ export default function Home() {
             >
               <p className="stat-label mb-2">{label}</p>
               <div className="flex items-center gap-2">
-                <span className="text-2xl">{country?.flag}</span>
+                <span className="text-2xl">
+                  <img className="w-12" src={country?.flag} alt={country?.name} />
+                </span>
                 <div>
                   <p className="font-semibold text-ink text-sm group-hover:text-teal transition-colors">
                     {country?.name || "N/A"}
                   </p>
                   <p className={`text-xs font-mono ${accent === "teal" ? "text-teal" :
-                      accent === "lav" ? "text-lav" :
-                        accent === "red" ? "text-red-400" : "text-yellow-400"
+                    accent === "lav" ? "text-lav" :
+                      accent === "red" ? "text-red-400" : "text-yellow-400"
                     }`}>{val}</p>
                 </div>
               </div>

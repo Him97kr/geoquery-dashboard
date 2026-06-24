@@ -102,11 +102,11 @@ export default function LineChart({ data = [], title }) {
     data.forEach((d) => {
       const xPos = x(d.name);
       // Flag
-      svg.append("text")
-        .attr("x", xPos).attr("y", iH + 18)
-        .attr("text-anchor", "middle")
-        .attr("font-size", "13px")
-        .text(d.flag || "");
+      svg.append("image")
+        .attr("x", xPos - 12).attr("y", iH + 6)
+        .attr("width", 24)
+        .attr("height", 16)
+        .attr("href", d.flag || "");
       // Name rotated
       svg.append("text")
         .attr("x", xPos).attr("y", iH + 34)
@@ -167,8 +167,10 @@ export default function LineChart({ data = [], title }) {
             .style("border", `1px solid ${t.tooltipBorder}`)
             .style("color", t.tooltipText)
             .html(`
-              <span style="font-size:16px">${d.flag}</span>
-              <strong style="color:${t.tooltipText};margin-left:6px">${d.name}</strong><br/>
+              <span style="display:flex">
+              <img style="width:24px; height:16px;" src=${d.flag} alt=${d.name} />
+              <strong style="color:${t.tooltipText};margin-left:6px">${d.name}</strong>
+              </span>
               <span style="color:${s.color};font-size:11px">
                 ${s.label}: ${fmtRaw(s.key, d.raw)}
               </span><br/>

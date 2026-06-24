@@ -272,7 +272,9 @@ export default function ChoroplethMap({ countries = [] }) {
             }}
           >
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-base">{hovered.flag}</span>
+              <span className="text-base">
+                <img className="w-6 h-4 drop-shadow-lg" src={hovered.flag} alt={hovered.name} />
+              </span>
               <span className="font-semibold">{hovered.name}</span>
             </div>
             <div className="flex items-center gap-1">

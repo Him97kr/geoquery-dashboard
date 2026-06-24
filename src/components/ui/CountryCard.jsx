@@ -26,7 +26,9 @@ export default function CountryCard({ country }) {
       className="card border border-border hover:border-teal/40 transition-all text-left w-full group"
     >
       <div className="flex items-center gap-3 mb-3">
-        <span className="text-3xl">{country.flag || "🌍"}</span>
+        <span className="text-3xl">
+          <img className="w-12" src={country.flag} alt={country.name} />
+        </span>
         <div>
           <p className="font-semibold text-ink group-hover:text-teal transition-colors">
             {country.name}
