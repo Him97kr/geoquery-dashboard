@@ -68,7 +68,9 @@ export default function CountryDetail() {
           <ArrowLeft size={14} strokeWidth={1.75} /> Back
         </button>
         <div className="flex items-center gap-4">
-          <span className="text-6xl">{c.flag}</span>
+          <span className="text-6xl">
+            <img className="w-16" src={c.flag} alt={c.name} />
+          </span>
           <div>
             <h1 className="heading text-3xl">{c.name}</h1>
             <p className="text-muted font-mono text-sm mt-1">
