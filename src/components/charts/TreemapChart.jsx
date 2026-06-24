@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { selectTheme } from "../../features/ui/uiSlice";
-import { readThemeColors } from "./chartTheme";
+import { readThemeColors, getOrCreateTooltip } from "./chartTheme";
 
 function fmt(n) {
   if (!n) return "N/A";
@@ -22,6 +22,7 @@ export default function TreemapChart({ data = [], title }) {
     if (!data.length || !svgRef.current) return;
     const t = readThemeColors();
     const regionColors = t.region;
+    getOrCreateTooltip("treemap-tooltip");
 
     const container = svgRef.current.parentElement;
     const W = container.clientWidth || 800;
@@ -131,16 +132,6 @@ export default function TreemapChart({ data = [], title }) {
   return (
     <div className="card w-full overflow-hidden">
       {title && <h3 className="text-sm font-semibold text-ink mb-4">{title}</h3>}
-
-      {/* Tooltip */}
-      <div
-        id="treemap-tooltip"
-        style={{
-          display: "none", position: "fixed", pointerEvents: "none",
-          borderRadius: "8px", padding: "10px 14px",
-          fontFamily: "monospace", zIndex: 9999, lineHeight: "1.8",
-        }}
-      />
 
       <svg ref={svgRef} className="w-full rounded-lg" />
 

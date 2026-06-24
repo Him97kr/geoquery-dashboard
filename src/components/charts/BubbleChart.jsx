@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { selectTheme } from "../../features/ui/uiSlice";
-import { readThemeColors } from "./chartTheme";
+import { readThemeColors, getOrCreateTooltip } from "./chartTheme";
 
 export default function BubbleChart({ data = [], title }) {
   // data: [{ name, flag, x: density, y: population, r: covidCases, region }]
@@ -13,6 +13,7 @@ export default function BubbleChart({ data = [], title }) {
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
     const t = readThemeColors();
+    getOrCreateTooltip("bubble-tooltip");
 
     const container = svgRef.current.parentElement;
     const W = container.clientWidth || 600;
@@ -142,15 +143,6 @@ export default function BubbleChart({ data = [], title }) {
   return (
     <div className="card w-full overflow-x-auto">
       {title && <h3 className="text-sm font-semibold text-ink mb-4">{title}</h3>}
-      {/* Tooltip */}
-      <div
-        id="bubble-tooltip"
-        style={{
-          display: "none", position: "fixed", pointerEvents: "none",
-          borderRadius: "8px", padding: "10px 14px",
-          fontFamily: "monospace", zIndex: 9999, lineHeight: "1.6",
-        }}
-      />
       <svg ref={svgRef} />
       {/* Legend */}
       <div className="flex flex-wrap gap-3 mt-3 px-2">

@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { selectTheme } from "../../features/ui/uiSlice";
-import { readThemeColors } from "./chartTheme";
+import { readThemeColors, getOrCreateTooltip } from "./chartTheme";
 
 export default function LineChart({ data = [], title }) {
   // data: [{ name, flag, population, density, covidCases }]
@@ -16,6 +16,7 @@ export default function LineChart({ data = [], title }) {
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
     const t = readThemeColors();
+    getOrCreateTooltip("linechart-tooltip");
 
     const LINES = [
       { key: "population", label: "Population", color: t.teal },
@@ -208,15 +209,6 @@ export default function LineChart({ data = [], title }) {
       <p className="text-xs text-muted mb-3 font-mono">
         All metrics normalized to 0–100 index for visual comparison. Hover dots for raw values.
       </p>
-
-      <div
-        id="linechart-tooltip"
-        style={{
-          display: "none", position: "fixed", pointerEvents: "none",
-          borderRadius: "8px", padding: "10px 14px",
-          fontFamily: "monospace", zIndex: 9999, lineHeight: "1.8",
-        }}
-      />
 
       <svg ref={svgRef} />
     </div>
