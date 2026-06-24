@@ -1,6 +1,7 @@
 // src/pages/Outbreaks.jsx
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { AlertTriangle, CheckCircle2 } from "lucide-react";
 import { selectOutbreakCountries } from "../features/countries/countriesSlice";
 import { useCountriesWithOutbreaks, useCountries } from "../hooks/useCountryData";
 import ChoroplethMap from "../components/charts/ChoroplethMap";
@@ -24,7 +25,10 @@ export default function Outbreaks() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">🚨 WHO Outbreak Alerts</h1>
+        <h1 className="heading text-2xl flex items-center gap-2">
+          <AlertTriangle size={22} className="text-red-400" strokeWidth={1.75} />
+          WHO Outbreak Alerts
+        </h1>
         <p className="text-muted text-sm mt-1">
           Countries with active WHO Disease Outbreak News — {outbreak.length} countries affected
         </p>
@@ -44,7 +48,7 @@ export default function Outbreaks() {
             >
               <span className="text-2xl">{country.flag}</span>
               <div>
-                <p className="font-semibold text-white group-hover:text-teal transition-colors">
+                <p className="font-semibold text-ink group-hover:text-teal transition-colors">
                   {country.name}
                 </p>
                 <p className="text-xs text-muted font-mono">{country.region} · Pop: {(country.population / 1e6).toFixed(1)}M</p>
@@ -64,7 +68,7 @@ export default function Outbreaks() {
                   rel="noopener noreferrer"
                   className="block border-l-2 border-red-500/60 pl-3 py-1 hover:border-red-400 transition-colors"
                 >
-                  <p className="text-xs text-white leading-relaxed">{o.title}</p>
+                  <p className="text-xs text-ink leading-relaxed">{o.title}</p>
                   {o.date && (
                     <p className="text-xs text-muted mt-0.5">{formatDate(o.date)}</p>
                   )}
@@ -76,8 +80,8 @@ export default function Outbreaks() {
 
         {outbreak.length === 0 && (
           <div className="col-span-2 text-center py-16">
-            <p className="text-4xl mb-3">✅</p>
-            <p className="text-white font-semibold">No active WHO outbreak alerts</p>
+            <CheckCircle2 size={36} className="text-teal mx-auto mb-3" strokeWidth={1.5} />
+            <p className="text-ink font-semibold">No active WHO outbreak alerts</p>
             <p className="text-muted text-sm mt-1">WHO data is checked every 30 minutes</p>
           </div>
         )}

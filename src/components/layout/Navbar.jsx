@@ -1,10 +1,11 @@
 // src/components/layout/Navbar.jsx
 import { Link, useLocation } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
 const navLinks = [
-  { path: "/",          label: "Home" },
-  { path: "/explorer",  label: "Explorer" },
-  { path: "/rankings",  label: "Rankings" },
+  { path: "/", label: "Home" },
+  { path: "/explorer", label: "Explorer" },
+  { path: "/rankings", label: "Rankings" },
   { path: "/outbreaks", label: "Outbreaks" },
 ];
 
@@ -12,10 +13,23 @@ export default function Navbar() {
   const location = useLocation();
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-surface border-b border-border h-14 flex items-center px-6 gap-4">
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 min-h-16 max-h-max flex flex-wrap items-center px-6 py-2 gap-4 border-b backdrop-blur-glass"
+      style={{
+        background: "rgb(var(--color-card) / var(--card-alpha))",
+        borderColor: "rgb(var(--color-border) / 0.08)",
+      }}
+    >
       {/* Logo */}
-      <Link to="/" className="flex items-center gap-2 font-mono font-bold text-teal text-lg mr-4">
-        🌍 GeoQuery
+      <Link to="/" className="flex items-center gap-2 font-display font-extrabold text-lg mr-4">
+        <span
+          className="w-2 h-2 rounded-full"
+          style={{
+            background: "linear-gradient(135deg, rgb(var(--color-teal)), rgb(var(--color-lav)))",
+            boxShadow: "0 0 10px rgb(var(--color-teal) / 0.6)",
+          }}
+        />
+        <span className="text-ink">GeoQuery Dashboard</span>
       </Link>
 
       {/* Nav links */}
@@ -24,21 +38,35 @@ export default function Navbar() {
           <Link
             key={path}
             to={path}
-            className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
+            className="px-3 py-1.5 rounded-lg text-sm font-mono transition-colors"
+            style={
               location.pathname === path
-                ? "bg-teal/10 text-teal border border-teal/30"
-                : "text-muted hover:text-white"
-            }`}
+                ? {
+                  color: "rgb(var(--color-teal))",
+                  background: "rgb(var(--color-teal) / 0.1)",
+                  border: "1px solid rgb(var(--color-teal) / 0.3)",
+                }
+                : { color: "rgb(var(--color-muted))" }
+            }
           >
             {label}
           </Link>
         ))}
       </div>
 
-      {/* Right — API status */}
-      <div className="ml-auto flex items-center gap-2 text-xs text-muted font-mono">
-        <span className="w-2 h-2 rounded-full bg-teal animate-pulse" />
-        GraphQL API
+      {/* Right — theme toggle + API status */}
+      <div className="ml-auto flex items-center gap-4">
+        <div className="flex items-center gap-2 text-xs font-mono" style={{ color: "rgb(var(--color-muted))" }}>
+          <span
+            className="w-2 h-2 rounded-full animate-pulse"
+            style={{ background: "rgb(var(--color-teal))" }}
+          />
+          GraphQL API
+        </div>
+        <div className="flex items-center gap-2 text-xs font-mono" style={{ color: "rgb(var(--color-muted))" }}>
+          Change Mode
+          <ThemeToggle />
+        </div>
       </div>
     </nav>
   );

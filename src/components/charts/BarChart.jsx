@@ -1,6 +1,9 @@
 // src/components/charts/BarChart.jsx
 import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import * as d3 from "d3";
+import { selectTheme } from "../../features/ui/uiSlice";
+import { readThemeColors } from "./chartTheme";
 
 function fmt(n) {
   if (n >= 1e9) return (n / 1e9).toFixed(1) + "B";
@@ -11,21 +14,22 @@ function fmt(n) {
 
 export default function BarChart({ data = [], valueKey = "population", labelKey = "name", color = "#00e5a0", title }) {
   const svgRef = useRef(null);
+  const theme = useSelector(selectTheme);
 
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
-
+    const t = readThemeColors();
     const container = svgRef.current.parentElement;
-    const W  = container.clientWidth || 600;
-    const H  = 420;
+    const W = container.clientWidth || 600;
+    const H = 420;
     const margin = { top: 20, right: 20, bottom: 100, left: 70 };
-    const iW = W  - margin.left - margin.right;
-    const iH = H  - margin.top  - margin.bottom;
+    const iW = W - margin.left - margin.right;
+    const iH = H - margin.top - margin.bottom;
 
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3.select(svgRef.current)
-      .attr("width",  W)
+      .attr("width", W)
       .attr("height", H)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -45,7 +49,7 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
       .call((g) => {
         g.select(".domain").remove();
         g.selectAll(".tick line")
-          .attr("stroke", "#1f2937")
+          .attr("stroke", t.axisLine)
           .attr("stroke-dasharray", "3,3");
       });
 
@@ -53,20 +57,20 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
     svg.append("g")
       .attr("transform", `translate(0,${iH})`)
       .call(d3.axisBottom(x))
-      .call((g) => g.select(".domain").attr("stroke", "#1f2937"))
+      .call((g) => g.select(".domain").attr("stroke", t.axisLine))
       .selectAll("text")
       .attr("transform", "rotate(-35)")
       .style("text-anchor", "end")
-      .attr("fill", "#6b7280")
+      .attr("fill", t.axisText)
       .attr("font-size", "11px");
 
     // Y axis
     svg.append("g")
       .call(d3.axisLeft(y).tickFormat(fmt).ticks(6))
       .call((g) => {
-        g.select(".domain").attr("stroke", "#1f2937");
-        g.selectAll("text").attr("fill", "#6b7280").attr("font-size", "11px");
-        g.selectAll(".tick line").attr("stroke", "#1f2937");
+        g.select(".domain").attr("stroke", t.axisLine);
+        g.selectAll("text").attr("fill", t.axisText).attr("font-size", "11px");
+        g.selectAll(".tick line").attr("stroke", t.axisLine);
       });
 
     // Bars
@@ -74,17 +78,17 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
       .data(data)
       .join("rect")
       .attr("class", "bar")
-      .attr("x",       (d) => x(d[labelKey]))
-      .attr("y",       iH)
-      .attr("width",   x.bandwidth())
-      .attr("height",  0)
-      .attr("fill",    color)
-      .attr("rx",      3)
+      .attr("x", (d) => x(d[labelKey]))
+      .attr("y", iH)
+      .attr("width", x.bandwidth())
+      .attr("height", 0)
+      .attr("fill", t[color] || color)
+      .attr("rx", 3)
       .attr("opacity", 0.85)
       .transition()
       .duration(600)
       .delay((_, i) => i * 30)
-      .attr("y",      (d) => y(d[valueKey]))
+      .attr("y", (d) => y(d[valueKey]))
       .attr("height", (d) => iH - y(d[valueKey]));
 
     // Value labels on top
@@ -92,23 +96,23 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
       .data(data)
       .join("text")
       .attr("class", "label")
-      .attr("x",          (d) => x(d[labelKey]) + x.bandwidth() / 2)
-      .attr("y",          (d) => y(d[valueKey]) - 4)
-      .attr("text-anchor","middle")
-      .attr("fill",       color)
-      .attr("font-size",  "10px")
-      .attr("font-family","monospace")
-      .attr("opacity",    0)
+      .attr("x", (d) => x(d[labelKey]) + x.bandwidth() / 2)
+      .attr("y", (d) => y(d[valueKey]) - 4)
+      .attr("text-anchor", "middle")
+      .attr("fill", t[color] || color)
+      .attr("font-size", "10px")
+      .attr("font-family", "monospace")
+      .attr("opacity", 0)
       .text((d) => fmt(d[valueKey]))
       .transition()
       .delay((_, i) => i * 30 + 600)
       .attr("opacity", 1);
 
-  }, [data, valueKey, labelKey, color]);
+  }, [data, valueKey, labelKey, color, theme]);
 
   return (
     <div className="card w-full overflow-x-auto">
-      {title && <h3 className="text-sm font-semibold text-white mb-4">{title}</h3>}
+      {title && <h3 className="text-sm font-semibold text-ink mb-4">{title}</h3>}
       <svg ref={svgRef} />
     </div>
   );

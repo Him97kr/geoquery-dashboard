@@ -2,32 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Color tokens ─────────────────────────────────────────────────────────
+   Defined as "R G B" triplets (no commas) so Tailwind's
+   rgb(var(--x) / <alpha-value>) opacity syntax works.
+   :root = light mode default, .dark overrides for dark mode.
+   ────────────────────────────────────────────────────────────────────── */
+:root {
+  --color-bg: 250 250 252;
+  --color-surface: 255 255 255;
+  --color-card: 255 255 255;
+  --color-border: 226 232 240;
+  --color-teal: 0 150 110;
+  /* deeper teal — keeps contrast on white */
+  --color-teal-d: 0 110 80;
+  --color-lav: 99 91 219;
+  /* deeper indigo-lavender for contrast */
+  --color-muted: 100 116 139;
+  --color-ink: 15 23 42;
+
+  --card-alpha: 0.9;
+  --card-blur: 0px;
+  --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.dark {
+  --color-bg: 8 9 13;
+  --color-surface: 13 17 23;
+  --color-card: 17 24 39;
+  --color-border: 255 255 255;
+  /* used at low alpha — see .card below */
+  --color-teal: 0 229 160;
+  --color-teal-d: 0 160 110;
+  --color-lav: 180 180 249;
+  --color-muted: 139 147 167;
+  --color-ink: 255 255 255;
+
+  --card-alpha: 0.65;
+  --card-blur: 10px;
+  --card-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
 @layer base {
-  body {
-    @apply bg-bg text-white font-sans antialiased;
+  html {
+    background: rgb(var(--color-bg));
   }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { @apply bg-surface; }
-  ::-webkit-scrollbar-thumb { @apply bg-border rounded-full; }
+
+  body {
+    @apply text-ink font-sans antialiased;
+    background-color: rgb(var(--color-bg));
+    background-image: var(--aurora-image, none);
+    background-attachment: fixed;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  .dark body {
+    --aurora-image: theme(backgroundImage.aurora-dark);
+  }
+
+  body:not(.dark) {
+    --aurora-image: theme(backgroundImage.aurora-light);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(var(--color-surface));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-border) / 0.4);
+    border-radius: 9999px;
+  }
 }
 
 @layer components {
+
+  /* ── Glass card — the core visual signature of this theme ── */
   .card {
-    @apply bg-card border border-border rounded-xl p-4;
+    background-color: rgb(var(--color-card) / var(--card-alpha));
+    border: 1px solid rgb(var(--color-border) / 0.08);
+    border-radius: 1rem;
+    padding: 1rem;
+    backdrop-filter: blur(var(--card-blur));
+    box-shadow: var(--card-shadow);
   }
+
+  .dark .card {
+    border-color: rgb(255 255 255 / 0.07);
+  }
+
+  html:not(.dark) .card {
+    border-color: rgb(var(--color-border));
+  }
+
   .stat-value {
-    @apply text-2xl font-bold text-teal font-mono;
+    @apply font-display text-2xl font-bold text-teal;
   }
+
   .stat-label {
     @apply text-xs text-muted uppercase tracking-widest;
   }
+
   .btn-primary {
-    @apply bg-teal text-bg font-semibold px-4 py-2 rounded-lg hover:bg-teal-d transition-colors;
+    @apply font-mono text-sm font-semibold px-4 py-2 rounded-lg transition-all;
+    background: linear-gradient(135deg, rgb(var(--color-teal)), rgb(var(--color-teal-d)));
+    color: rgb(var(--color-bg));
   }
+
+  .btn-primary:hover {
+    filter: brightness(1.08);
+  }
+
   .btn-ghost {
-    @apply border border-border text-muted px-4 py-2 rounded-lg hover:border-teal hover:text-teal transition-colors;
+    @apply border font-mono text-sm px-4 py-2 rounded-lg transition-colors;
+    border-color: rgb(var(--color-border) / 0.6);
+    color: rgb(var(--color-muted));
   }
+
+  .btn-ghost:hover {
+    border-color: rgb(var(--color-teal) / 0.5);
+    color: rgb(var(--color-teal));
+  }
+
   .badge {
     @apply text-xs px-2 py-1 rounded-full border font-mono;
+  }
+
+  /* Headlines — Syne, optionally with the signature gradient-text accent */
+  .heading {
+    @apply font-display font-bold tracking-tight;
+    color: rgb(var(--color-ink));
+  }
+
+  .accent-text {
+    background: linear-gradient(90deg, rgb(var(--color-teal)), rgb(var(--color-lav)));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }
