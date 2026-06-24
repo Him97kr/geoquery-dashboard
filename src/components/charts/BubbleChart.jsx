@@ -107,8 +107,10 @@ export default function BubbleChart({ data = [], title }) {
           .style("border", `1px solid ${t.tooltipBorder}`)
           .style("color", t.tooltipText)
           .html(`
-            <span style="font-size:18px">${d.flag}</span>
-            <strong style="color:${t.tooltipText}">${d.name}</strong><br/>
+            <span style="display:flex">
+            <img style="width:24px; height:16px;" src=${d.flag} alt=${d.name} />
+            <strong style="color:${t.tooltipText};margin-left:6px">${d.name}</strong>
+            </span>
             <span style="color:${t.muted};font-size:11px">Population: </span>
             <span style="color:${t.teal};font-size:11px">${(d.y / 1e6).toFixed(1)}M</span><br/>
             <span style="color:${t.muted};font-size:11px">Density: </span>
@@ -127,14 +129,14 @@ export default function BubbleChart({ data = [], title }) {
     // Country flag labels for large bubbles
     svg.selectAll(".flag-label")
       .data(data.filter((d) => d.r > maxCases * 0.3))
-      .join("text")
+      .join("image")
       .attr("class", "flag-label")
-      .attr("x", (d) => x(Math.max(1, d.x)))
-      .attr("y", (d) => y(Math.max(100000, d.y)) + 4)
-      .attr("text-anchor", "middle")
-      .attr("font-size", "14px")
+      .attr("href", (d) => d.flag)
+      .attr("width", 24)
+      .attr("height", 16)
+      .attr("x", (d) => x(Math.max(1, d.x)) - 12) // Centers the image horizontally
+      .attr("y", (d) => y(Math.max(100000, d.y)) - 7)
       .attr("opacity", 0)
-      .text((d) => d.flag)
       .transition().delay(800)
       .attr("opacity", 1);
 
