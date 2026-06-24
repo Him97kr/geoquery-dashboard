@@ -11,8 +11,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg">
       <Navbar />
-      {/* pt-20 clears the fixed h-16 navbar plus breathing room */}
-      <main className="pt-20">
+      <main className="pt-28">
         <div className="p-6 max-w-screen-2xl mx-auto">
           <Routes>
             <Route path="/" element={<Home />} />

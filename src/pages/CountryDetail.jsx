@@ -61,7 +61,7 @@ export default function CountryDetail() {
   const c = country;
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-full">
       {/* Back + header */}
       <div>
         <button onClick={() => navigate(-1)} className="text-muted hover:text-teal text-sm mb-3 flex items-center gap-1 transition-colors">

@@ -14,7 +14,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-0 left-0 right-0 z-50 h-16 flex items-center px-6 gap-4 border-b backdrop-blur-glass"
+      className="fixed top-0 left-0 right-0 z-50 min-h-16 max-h-max flex flex-wrap items-center px-6 py-2 gap-4 border-b backdrop-blur-glass"
       style={{
         background: "rgb(var(--color-card) / var(--card-alpha))",
         borderColor: "rgb(var(--color-border) / 0.08)",
