@@ -11,7 +11,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-bg">
       <Navbar />
-      <main className="pt-28">
+      <main className="pt-28 md:pt-20 lg:pt-16">
         <div className="p-6 max-w-screen-2xl mx-auto">
           <Routes>
             <Route path="/" element={<Home />} />
