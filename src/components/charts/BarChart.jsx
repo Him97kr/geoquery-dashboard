@@ -1,6 +1,8 @@
 // src/components/charts/BarChart.jsx
 import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import * as d3 from "d3";
+import { selectTheme } from "../../features/ui/uiSlice";
 import { readThemeColors } from "./chartTheme";
 
 function fmt(n) {
@@ -12,6 +14,7 @@ function fmt(n) {
 
 export default function BarChart({ data = [], valueKey = "population", labelKey = "name", color = "#00e5a0", title }) {
   const svgRef = useRef(null);
+  const theme = useSelector(selectTheme);
 
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
@@ -46,7 +49,7 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
       .call((g) => {
         g.select(".domain").remove();
         g.selectAll(".tick line")
-          .attr("stroke", "#1f2937")
+          .attr("stroke", t.axisLine)
           .attr("stroke-dasharray", "3,3");
       });
 
@@ -54,20 +57,20 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
     svg.append("g")
       .attr("transform", `translate(0,${iH})`)
       .call(d3.axisBottom(x))
-      .call((g) => g.select(".domain").attr("stroke", "#1f2937"))
+      .call((g) => g.select(".domain").attr("stroke", t.axisLine))
       .selectAll("text")
       .attr("transform", "rotate(-35)")
       .style("text-anchor", "end")
-      .attr("fill", "#6b7280")
+      .attr("fill", t.axisText)
       .attr("font-size", "11px");
 
     // Y axis
     svg.append("g")
       .call(d3.axisLeft(y).tickFormat(fmt).ticks(6))
       .call((g) => {
-        g.select(".domain").attr("stroke", "#1f2937");
-        g.selectAll("text").attr("fill", "#6b7280").attr("font-size", "11px");
-        g.selectAll(".tick line").attr("stroke", "#1f2937");
+        g.select(".domain").attr("stroke", t.axisLine);
+        g.selectAll("text").attr("fill", t.axisText).attr("font-size", "11px");
+        g.selectAll(".tick line").attr("stroke", t.axisLine);
       });
 
     // Bars
@@ -105,7 +108,7 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
       .delay((_, i) => i * 30 + 600)
       .attr("opacity", 1);
 
-  }, [data, valueKey, labelKey, color]);
+  }, [data, valueKey, labelKey, color, theme]);
 
   return (
     <div className="card w-full overflow-x-auto">

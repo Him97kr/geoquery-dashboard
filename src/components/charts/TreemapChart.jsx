@@ -119,7 +119,7 @@ export default function TreemapChart({ data = [], title }) {
             .attr("x", w / 2)
             .attr("y", h / 2 + 26)
             .attr("text-anchor", "middle")
-            .attr("fill", regionColors[d.data.region] || t.muted)
+            .attr("fill", t.isDark ? "#fff" : "#0f172a")
             .attr("font-size", "9px")
             .attr("font-family", "monospace")
             .text(fmt(d.data.population));

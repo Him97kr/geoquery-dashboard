@@ -119,23 +119,16 @@ export default function ChoroplethMap({ countries = [] }) {
 
     const activeMetric = METRICS.find((m) => m.key === metric);
 
-    // Compute values for the color scale (zeros/no-data handled separately below)
+    // Compute values for color scale — filter zeros for log scale
     const allValues = countries.map((c) => getValue(c.code)).filter((v) => v > 0);
 
-    // Quantile scale — buckets countries by RANK within the actual dataset
-    // rather than raw magnitude. A continuous log scale over raw values
-    // compresses most countries toward one end whenever the data is highly
-    // skewed (population: China vs. Vatican; density: Monaco vs. Mongolia) —
-    // quantiles guarantee visible variation regardless of skew, since each
-    // bucket holds roughly the same number of countries by definition.
-    const NUM_BUCKETS = 7;
-    const bucketColors = d3.quantize(
-      (i) => d3.interpolateRgb(t.mapNoData, activeMetric.color)(i),
-      NUM_BUCKETS
-    );
-    const colorScale = d3.scaleQuantile()
-      .domain(allValues)
-      .range(bucketColors);
+    const minVal = d3.min(allValues) || 1;
+    const maxVal = d3.max(allValues) || 1;
+
+    const colorScale = d3.scaleSequentialLog()
+      .domain([Math.max(1, minVal), maxVal])
+      .interpolator(d3.interpolate(t.mapNoData, activeMetric.color))
+      .clamp(true);
 
     const geojson = topojson.feature(world, world.objects.countries);
 
@@ -204,7 +197,7 @@ export default function ChoroplethMap({ countries = [] }) {
     // ── Legend ──────────────────────────────────────────────────────────────
     const lW = 180, lH = 10;
     const lX = W - lW - 16;
-    const lY = H - 32;
+    const lY = H - 20;
 
     const defs = svg.append("defs");
     const grad = defs.append("linearGradient").attr("id", "cmap-grad");
@@ -249,8 +242,8 @@ export default function ChoroplethMap({ countries = [] }) {
               key={m.key}
               onClick={() => dispatch(setMapMetric(m.key))}
               className={`badge transition-colors ${metric === m.key
-                  ? "border-teal text-teal bg-teal/10"
-                  : "border-border text-muted hover:border-teal/40"
+                ? "border-teal text-teal bg-teal/10"
+                : "border-border text-muted hover:border-teal/40"
                 }`}
             >
               {m.label}

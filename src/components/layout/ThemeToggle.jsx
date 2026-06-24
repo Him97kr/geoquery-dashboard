@@ -1,4 +1,3 @@
-// src/components/layout/ThemeToggle.jsx
 import { useSelector, useDispatch } from "react-redux";
 import { selectTheme, toggleTheme } from "../../features/ui/uiSlice";
 

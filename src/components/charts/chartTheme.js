@@ -1,4 +1,3 @@
-// src/utils/chartTheme.js
 // D3 paints hex strings directly into SVG attributes, so it can't pick up
 // Tailwind's CSS-variable-backed colors automatically. This helper reads the
 // *current* resolved values of our theme variables at draw time. Each chart
@@ -31,7 +30,7 @@ export function readThemeColors() {
     // Grid / axis lines — subtle, theme-appropriate
     grid: isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)",
     axisLine: isDark ? "rgba(255,255,255,0.12)" : "rgba(15,23,42,0.15)",
-    axisText: "rgb(var(--color-muted))",
+    axisText: isDark ? "rgb(255, 255, 255)" : "rgb(0, 0, 0)",
     // Tooltip + map-specific surfaces
     tooltipBg: isDark ? "#0d1117" : "#ffffff",
     tooltipBorder: isDark ? "#1f2937" : "#e2e8f0",
