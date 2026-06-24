@@ -6,12 +6,7 @@ import { selectMapMetric, setMapMetric, selectTheme } from "../../features/ui/ui
 import { TOP_BY_COVID } from "../../apollo/queries";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
-
-const METRICS = [
-  { key: "population", label: "Population", color: "#00e5a0" },
-  { key: "density", label: "Density", color: "#b4b4f9" },
-  { key: "cases", label: "COVID Cases", color: "#f87171" },
-];
+import { readThemeColors } from "./chartTheme";
 
 // ISO numeric → ISO alpha3 mapping (top 250 countries)
 const NUMERIC_TO_ALPHA3 = {
@@ -54,7 +49,6 @@ export default function ChoroplethMap({ countries = [] }) {
   const theme = useSelector(selectTheme);
   const [world, setWorld] = useState(null);
   const [hovered, setHovered] = useState(null);
-  const isDark = theme === "dark";
 
   // Fetch COVID data separately so map has it
   const { data: covidData } = useQuery(TOP_BY_COVID, {
@@ -84,8 +78,18 @@ export default function ChoroplethMap({ countries = [] }) {
       .then(setWorld);
   }, []);
 
+  const METRICS = useMemo(() => {
+    const t = readThemeColors();
+    return [
+      { key: "population", label: "Population", color: t.teal },
+      { key: "density", label: "Density", color: t.lav },
+      { key: "cases", label: "COVID Cases", color: t.red },
+    ];
+  }, [theme]);
+
   useEffect(() => {
     if (!world || !countries.length || !svgRef.current) return;
+    const t = readThemeColors();
 
     const container = svgRef.current.parentElement;
     const W = container.clientWidth || 900;
@@ -126,7 +130,7 @@ export default function ChoroplethMap({ countries = [] }) {
     // Cases:      USA 100M vs small islands ~0
     const colorScale = d3.scaleSequentialLog()
       .domain([Math.max(1, minVal), maxVal])
-      .interpolator(d3.interpolate("#1a2535", activeMetric.color))
+      .interpolator(d3.interpolate(t.mapNoData, activeMetric.color))
       .clamp(true);
 
     const geojson = topojson.feature(world, world.objects.countries);
@@ -139,12 +143,12 @@ export default function ChoroplethMap({ countries = [] }) {
       .attr("fill", (feature) => {
         const numericId = String(feature.id).padStart(3, "0");
         const alpha3 = NUMERIC_TO_ALPHA3[numericId];
-        if (!alpha3) return "#1f2937";
+        if (!alpha3) return t.mapNoData;
         const val = getValue(alpha3);
-        if (val <= 0) return "#1f2937";
+        if (val <= 0) return t.mapNoData;
         return colorScale(val);
       })
-      .attr("stroke", "#0d1117")
+      .attr("stroke", t.mapStroke)
       .attr("stroke-width", 0.4)
       .attr("opacity", 0.9)
       .on("mouseenter", function (event, feature) {
@@ -173,7 +177,7 @@ export default function ChoroplethMap({ countries = [] }) {
         d3.select(this)
           .attr("opacity", 0.9)
           .attr("stroke-width", 0.4)
-          .attr("stroke", "#0d1117");
+          .attr("stroke", t.mapStroke);
         setHovered(null);
       });
 
@@ -182,7 +186,7 @@ export default function ChoroplethMap({ countries = [] }) {
       .datum(d3.geoGraticule()())
       .attr("d", pathGen)
       .attr("fill", "none")
-      .attr("stroke", "#1a2332")
+      .attr("stroke", t.grid)
       .attr("stroke-width", 0.3);
 
     // Sphere border
@@ -190,7 +194,7 @@ export default function ChoroplethMap({ countries = [] }) {
       .datum({ type: "Sphere" })
       .attr("d", pathGen)
       .attr("fill", "none")
-      .attr("stroke", "#374151")
+      .attr("stroke", t.axisLine)
       .attr("stroke-width", 0.8);
 
     // ── Legend ──────────────────────────────────────────────────────────────
@@ -200,7 +204,7 @@ export default function ChoroplethMap({ countries = [] }) {
 
     const defs = svg.append("defs");
     const grad = defs.append("linearGradient").attr("id", "cmap-grad");
-    grad.append("stop").attr("offset", "0%").attr("stop-color", "#111827");
+    grad.append("stop").attr("offset", "0%").attr("stop-color", t.mapNoData);
     grad.append("stop").attr("offset", "100%").attr("stop-color", activeMetric.color);
 
     svg.append("rect")
@@ -210,15 +214,15 @@ export default function ChoroplethMap({ countries = [] }) {
 
     svg.append("text")
       .attr("x", lX).attr("y", lY - 4)
-      .attr("fill", "#6b7280").attr("font-size", "10px")
+      .attr("fill", t.axisText).attr("font-size", "10px")
       .text("Low");
     svg.append("text")
       .attr("x", lX + lW).attr("y", lY - 4)
-      .attr("fill", "#6b7280").attr("font-size", "10px")
+      .attr("fill", t.axisText).attr("font-size", "10px")
       .attr("text-anchor", "end")
       .text("High");
 
-  }, [world, countries, metric, countryLookup, covidLookup]);
+  }, [world, countries, metric, countryLookup, covidLookup, theme]);
 
   function fmtVal(c) {
     if (!c) return "";
@@ -227,6 +231,8 @@ export default function ChoroplethMap({ countries = [] }) {
     if (metric === "cases") return ((c.covidCases || 0) / 1e6).toFixed(2) + "M cases";
     return "";
   }
+
+  const activeMetricMeta = METRICS.find((m) => m.key === metric);
 
   return (
     <div className="card w-full">
@@ -250,24 +256,33 @@ export default function ChoroplethMap({ countries = [] }) {
       </div>
 
       {/* Map */}
-      <div className={`relative overflow-hidden rounded-lg bg-[${isDark ? "#0a0f18" : "#0b3e9d"}]`}>
+      <div
+        className="relative overflow-hidden rounded-lg"
+        style={{ background: readThemeColors().mapOcean }}
+      >
         <svg ref={svgRef} className="w-full" />
 
         {/* Hover tooltip */}
         {hovered && (
           <div
-            className="absolute pointer-events-none bg-card border border-border rounded-lg px-3 py-2 text-xs font-mono shadow-xl z-10"
-            style={{ left: hovered.screenX + 14, top: Math.max(8, hovered.screenY - 14) }}
+            className="absolute pointer-events-none rounded-lg px-3 py-2 text-xs font-mono shadow-xl z-10"
+            style={{
+              left: hovered.screenX + 14,
+              top: Math.max(8, hovered.screenY - 14),
+              background: "rgb(var(--color-card))",
+              border: "1px solid rgb(var(--color-border) / 0.3)",
+              color: "rgb(var(--color-ink))",
+            }}
           >
             <div className="flex items-center gap-2 mb-1">
               <span className="text-base">{hovered.flag}</span>
-              <span className="font-semibold text-ink">{hovered.name}</span>
+              <span className="font-semibold">{hovered.name}</span>
             </div>
             <div className="flex items-center gap-1">
               <span className="text-muted">
-                {METRICS.find((m) => m.key === metric)?.label}:
+                {activeMetricMeta?.label}:
               </span>
-              <span style={{ color: METRICS.find((m) => m.key === metric)?.color }}>
+              <span style={{ color: activeMetricMeta?.color }}>
                 {fmtVal(hovered)}
               </span>
             </div>

@@ -2,6 +2,7 @@
 import { useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "@apollo/client";
+import { Search } from "lucide-react";
 import { SEARCH_COUNTRIES, GET_COUNTRIES } from "../apollo/queries";
 import {
   selectSearch, selectRegion,
@@ -61,7 +62,10 @@ export default function Explorer() {
       {/* Header + controls */}
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-ink">🔍 Country Explorer</h1>
+          <h1 className="heading text-2xl flex items-center gap-2">
+            <Search size={20} className="text-teal" strokeWidth={1.75} />
+            Country Explorer
+          </h1>
           <p className="text-muted text-sm mt-1">
             {countries.length} countries {region ? `in ${region}` : "worldwide"}
           </p>

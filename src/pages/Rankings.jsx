@@ -1,5 +1,6 @@
 // src/pages/Rankings.jsx
 import { useSelector, useDispatch } from "react-redux";
+import { BarChart3, Circle, LayoutGrid, LineChart as LineChartIcon } from "lucide-react";
 import { selectTopPopulation, selectTopCovid } from "../features/countries/countriesSlice";
 import { selectRankLimit, setRankLimit }        from "../features/filters/filtersSlice";
 import { selectChartType, setChartType }        from "../features/ui/uiSlice";
@@ -12,10 +13,10 @@ import Loader          from "../components/ui/Loader";
 import { useMemo }     from "react";
 
 const CHART_TYPES = [
-  { key: "bar",     label: "Bar",             icon: "📊" },
-  { key: "bubble",  label: "Bubble",          icon: "🫧" },
-  { key: "treemap", label: "Treemap",         icon: "🗂️" },
-  { key: "line",    label: "Multi-Metric",    icon: "📈" },
+  { key: "bar",     label: "Bar",          Icon: BarChart3 },
+  { key: "bubble",  label: "Bubble",       Icon: Circle },
+  { key: "treemap", label: "Treemap",      Icon: LayoutGrid },
+  { key: "line",    label: "Multi-Metric", Icon: LineChartIcon },
 ];
 
 const LIMITS = [10, 15, 20];
@@ -55,7 +56,7 @@ export default function Rankings() {
       .slice(0, 20)
       .map((c) => ({
         name:       c.name,
-        flag:       c.flag || "🌍",
+        flag:       c.flag || "",
         population: c.population || 0,
         density:    c.density    || 0,
         covidCases: covidMap[c.code] || 0,
@@ -73,7 +74,10 @@ export default function Rankings() {
       {/* Header */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-ink">🏆 Rankings & Charts</h1>
+          <h1 className="heading text-2xl flex items-center gap-2">
+            <BarChart3 size={22} className="text-teal" strokeWidth={1.75} />
+            Rankings &amp; Charts
+          </h1>
           <p className="text-muted text-sm mt-1">
             Compare countries across population, density and COVID metrics
           </p>
@@ -82,17 +86,17 @@ export default function Rankings() {
         <div className="flex items-center gap-3 flex-wrap">
           {/* Chart type */}
           <div className="flex gap-2 flex-wrap">
-            {CHART_TYPES.map(({ key, label, icon }) => (
+            {CHART_TYPES.map(({ key, label, Icon }) => (
               <button
                 key={key}
                 onClick={() => dispatch(setChartType(key))}
-                className={`badge transition-colors ${
+                className={`badge transition-colors inline-flex items-center gap-1.5 ${
                   chartType === key
                     ? "border-teal text-teal bg-teal/10"
                     : "border-border text-muted hover:border-teal/40"
                 }`}
               >
-                {icon} {label}
+                <Icon size={13} strokeWidth={1.75} /> {label}
               </button>
             ))}
           </div>
@@ -130,7 +134,7 @@ export default function Rankings() {
                   data={displayedPop}
                   valueKey="population"
                   labelKey="name"
-                  color="#00e5a0"
+                  color="teal"
                   title={`Top ${limit} Countries by Population`}
                 />
                 <BarChart
@@ -140,14 +144,14 @@ export default function Rankings() {
                   }))}
                   valueKey="covidCases"
                   labelKey="name"
-                  color="#f87171"
+                  color="red"
                   title={`Top ${limit} Countries by COVID Cases`}
                 />
                 <BarChart
                   data={[...displayedPop].sort((a, b) => b.density - a.density)}
                   valueKey="density"
                   labelKey="name"
-                  color="#b4b4f9"
+                  color="lav"
                   title={`Top ${limit} Countries by Population Density`}
                 />
               </>

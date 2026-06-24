@@ -2,6 +2,11 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { useDispatch } from "react-redux";
+import {
+  Users, Ruler, MapPin, Landmark,
+  Activity, Skull, Zap, HeartPulse, CheckCircle2, CalendarDays, TrendingUp, FlaskConical,
+  ArrowLeft, Globe2,
+} from "lucide-react";
 import { setSelectedCountry } from "../features/countries/countriesSlice";
 import { GET_COUNTRY } from "../apollo/queries";
 import StatCard from "../components/ui/StatCard";
@@ -43,12 +48,12 @@ export default function CountryDetail() {
   if (loading) return <Loader text={`Loading ${code}...`} />;
   if (error || !country) return (
     <div className="text-center py-24">
-      <p className="text-4xl mb-3">🌍</p>
+      <Globe2 size={36} className="text-muted mx-auto mb-3" strokeWidth={1.5} />
       <p className="text-ink font-semibold">Country not found</p>
       <p className="text-muted text-xs mt-2 font-mono">code: {code}</p>
       {error && <p className="text-red-400 text-xs mt-1 font-mono">{error.message}</p>}
       <button onClick={() => navigate("/explorer")} className="btn-ghost mt-4 text-sm">
-        ← Back to Explorer
+        Back to Explorer
       </button>
     </div>
   );
@@ -60,12 +65,12 @@ export default function CountryDetail() {
       {/* Back + header */}
       <div>
         <button onClick={() => navigate(-1)} className="text-muted hover:text-teal text-sm mb-3 flex items-center gap-1 transition-colors">
-          ← Back
+          <ArrowLeft size={14} strokeWidth={1.75} /> Back
         </button>
         <div className="flex items-center gap-4">
           <span className="text-6xl">{c.flag}</span>
           <div>
-            <h1 className="text-3xl font-bold text-ink">{c.name}</h1>
+            <h1 className="heading text-3xl">{c.name}</h1>
             <p className="text-muted font-mono text-sm mt-1">
               {c.code} · {c.capital || "N/A"} · {c.region}
             </p>
@@ -77,10 +82,10 @@ export default function CountryDetail() {
       <div>
         <h2 className="text-sm font-semibold text-muted uppercase tracking-widest mb-3">Demographics</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard icon="👥" label="Population" value={fmt(c.population)} accent="teal" />
-          <StatCard icon="📐" label="Density" value={c.density ? c.density.toFixed(1) + " /km²" : "N/A"} accent="lav" />
-          <StatCard icon="🗺️" label="Area" value={fmt(c.area) + " km²"} accent="yellow" />
-          <StatCard icon="🏛️" label="Capital" value={c.capital || "N/A"} accent="teal" />
+          <StatCard icon={Users} label="Population" value={fmt(c.population)} accent="teal" />
+          <StatCard icon={Ruler} label="Density" value={c.density ? c.density.toFixed(1) + " /km²" : "N/A"} accent="lav" />
+          <StatCard icon={MapPin} label="Area" value={fmt(c.area) + " km²"} accent="yellow" />
+          <StatCard icon={Landmark} label="Capital" value={c.capital || "N/A"} accent="teal" />
         </div>
       </div>
 
@@ -111,14 +116,14 @@ export default function CountryDetail() {
             COVID-19 · disease.sh
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon="🦠" label="Total Cases" value={fmt(c.covid.cases)} accent="red" />
-            <StatCard icon="💀" label="Deaths" value={fmt(c.covid.deaths)} accent="red" />
-            <StatCard icon="⚡" label="Active" value={fmt(c.covid.active)} accent="yellow" />
-            <StatCard icon="🏥" label="Critical" value={fmt(c.covid.critical)} accent="yellow" />
-            <StatCard icon="✅" label="Recovered" value={fmt(c.covid.recovered)} accent="teal" />
-            <StatCard icon="📅" label="Today Cases" value={fmt(c.covid.todayCases)} accent="lav" />
-            <StatCard icon="📊" label="Per Million" value={c.covid.casesPerMillion?.toFixed(0)} accent="lav" />
-            <StatCard icon="🧪" label="Tests" value={fmt(c.covid.tests)} accent="teal" />
+            <StatCard icon={Activity} label="Total Cases" value={fmt(c.covid.cases)} accent="red" />
+            <StatCard icon={Skull} label="Deaths" value={fmt(c.covid.deaths)} accent="red" />
+            <StatCard icon={Zap} label="Active" value={fmt(c.covid.active)} accent="yellow" />
+            <StatCard icon={HeartPulse} label="Critical" value={fmt(c.covid.critical)} accent="yellow" />
+            <StatCard icon={CheckCircle2} label="Recovered" value={fmt(c.covid.recovered)} accent="teal" />
+            <StatCard icon={CalendarDays} label="Today Cases" value={fmt(c.covid.todayCases)} accent="lav" />
+            <StatCard icon={TrendingUp} label="Per Million" value={c.covid.casesPerMillion?.toFixed(0)} accent="lav" />
+            <StatCard icon={FlaskConical} label="Tests" value={fmt(c.covid.tests)} accent="teal" />
           </div>
           {c.covid.updatedAt && (
             <p className="text-xs text-muted mt-2 font-mono">
@@ -155,7 +160,7 @@ export default function CountryDetail() {
           </div>
         ) : (
           <div className="card border-border text-center py-6">
-            <p className="text-2xl mb-1">✅</p>
+            <CheckCircle2 size={24} className="text-teal mx-auto mb-1" strokeWidth={1.5} />
             <p className="text-muted text-sm">No active WHO alerts for {c.name}</p>
           </div>
         )}

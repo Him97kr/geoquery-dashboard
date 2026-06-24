@@ -2,33 +2,38 @@
 // Shows 3 normalized lines (Population, Density, COVID Cases)
 // for top N populated countries on the same scale (0–100 index)
 import { useEffect, useRef } from "react";
+import { useSelector } from "react-redux";
 import * as d3 from "d3";
-
-const LINES = [
-  { key: "population", label: "Population",  color: "#00e5a0" },
-  { key: "density",    label: "Density",     color: "#b4b4f9" },
-  { key: "covidCases", label: "COVID Cases", color: "#f87171" },
-];
+import { selectTheme } from "../../features/ui/uiSlice";
+import { readThemeColors } from "./chartTheme";
 
 export default function LineChart({ data = [], title }) {
   // data: [{ name, flag, population, density, covidCases }]
   // All values normalized 0-100 so 3 metrics visible on same axis
   const svgRef = useRef(null);
+  const theme = useSelector(selectTheme);
 
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
+    const t = readThemeColors();
+
+    const LINES = [
+      { key: "population", label: "Population", color: t.teal },
+      { key: "density", label: "Density", color: t.lav },
+      { key: "covidCases", label: "COVID Cases", color: t.red },
+    ];
 
     const container = svgRef.current.parentElement;
-    const W  = container.clientWidth || 700;
-    const H  = 420;
+    const W = container.clientWidth || 700;
+    const H = 420;
     const margin = { top: 24, right: 160, bottom: 110, left: 50 };
-    const iW = W  - margin.left - margin.right;
-    const iH = H  - margin.top  - margin.bottom;
+    const iW = W - margin.left - margin.right;
+    const iH = H - margin.top - margin.bottom;
 
     d3.select(svgRef.current).selectAll("*").remove();
 
     const svg = d3.select(svgRef.current)
-      .attr("width",  W)
+      .attr("width", W)
       .attr("height", H)
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
@@ -36,12 +41,12 @@ export default function LineChart({ data = [], title }) {
     // Normalize each metric 0–100
     const normalize = (key) => {
       const vals = data.map((d) => d[key] || 0);
-      const min  = d3.min(vals);
-      const max  = d3.max(vals) || 1;
+      const min = d3.min(vals);
+      const max = d3.max(vals) || 1;
       return data.map((d) => ({
-        name:       d.name,
-        flag:       d.flag,
-        raw:        d[key] || 0,
+        name: d.name,
+        flag: d.flag,
+        raw: d[key] || 0,
         normalized: ((d[key] || 0) - min) / (max - min) * 100,
       }));
     };
@@ -66,32 +71,30 @@ export default function LineChart({ data = [], title }) {
       .call(d3.axisLeft(y).tickSize(-iW).tickFormat("").ticks(5))
       .call((g) => {
         g.select(".domain").remove();
-        g.selectAll(".tick line")
-          .attr("stroke", "#1f2937")
-          .attr("stroke-dasharray", "3,3");
+        g.selectAll(".tick line").attr("stroke", t.grid).attr("stroke-dasharray", "3,3");
       });
 
     // Y axis — labeled as "Index (0–100)"
     svg.append("g")
       .call(d3.axisLeft(y).ticks(5).tickFormat((d) => d))
       .call((g) => {
-        g.select(".domain").attr("stroke", "#1f2937");
-        g.selectAll("text").attr("fill", "#6b7280").attr("font-size", "11px");
-        g.selectAll(".tick line").attr("stroke", "#1f2937");
+        g.select(".domain").attr("stroke", t.axisLine);
+        g.selectAll("text").attr("fill", t.axisText).attr("font-size", "11px");
+        g.selectAll(".tick line").attr("stroke", t.grid);
       });
 
     svg.append("text")
       .attr("transform", "rotate(-90)")
       .attr("x", -iH / 2).attr("y", -38)
       .attr("text-anchor", "middle")
-      .attr("fill", "#6b7280").attr("font-size", "10px")
+      .attr("fill", t.axisText).attr("font-size", "10px")
       .text("Normalized Index (0 = lowest, 100 = highest)");
 
     // X axis — flags + rotated names
     const xAxisG = svg.append("g")
       .attr("transform", `translate(0,${iH})`)
       .call(d3.axisBottom(x).tickSize(0))
-      .call((g) => g.select(".domain").attr("stroke", "#1f2937"));
+      .call((g) => g.select(".domain").attr("stroke", t.axisLine));
 
     xAxisG.selectAll(".tick text").remove();
 
@@ -102,13 +105,13 @@ export default function LineChart({ data = [], title }) {
         .attr("x", xPos).attr("y", iH + 18)
         .attr("text-anchor", "middle")
         .attr("font-size", "13px")
-        .text(d.flag || "🌍");
+        .text(d.flag || "");
       // Name rotated
       svg.append("text")
         .attr("x", xPos).attr("y", iH + 34)
         .attr("text-anchor", "end")
         .attr("transform", `rotate(-40, ${xPos}, ${iH + 34})`)
-        .attr("fill", "#6b7280")
+        .attr("fill", t.axisText)
         .attr("font-size", "10px")
         .text(d.name.length > 12 ? d.name.slice(0, 11) + "…" : d.name);
     });
@@ -126,15 +129,15 @@ export default function LineChart({ data = [], title }) {
       // Line path with draw animation
       const path = svg.append("path")
         .datum(s.points)
-        .attr("fill",         "none")
-        .attr("stroke",       s.color)
+        .attr("fill", "none")
+        .attr("stroke", s.color)
         .attr("stroke-width", 2)
-        .attr("opacity",      0.9)
-        .attr("d",            lineGen);
+        .attr("opacity", 0.9)
+        .attr("d", lineGen);
 
       const len = path.node().getTotalLength();
       path
-        .attr("stroke-dasharray",  len)
+        .attr("stroke-dasharray", len)
         .attr("stroke-dashoffset", len)
         .transition()
         .duration(900)
@@ -146,26 +149,29 @@ export default function LineChart({ data = [], title }) {
       svg.selectAll(`.dot-${si}`)
         .data(s.points)
         .join("circle")
-        .attr("cx",      (d) => x(d.name))
-        .attr("cy",      (d) => y(d.normalized))
-        .attr("r",       4)
-        .attr("fill",    s.color)
-        .attr("stroke",  "#0d1117")
+        .attr("cx", (d) => x(d.name))
+        .attr("cy", (d) => y(d.normalized))
+        .attr("r", 4)
+        .attr("fill", s.color)
+        .attr("stroke", t.tooltipBg)
         .attr("stroke-width", 1.5)
         .attr("opacity", 0)
         .on("mouseenter", function (event, d) {
           d3.select(this).attr("r", 6);
           tooltipEl
             .style("display", "block")
-            .style("left",  event.pageX + 12 + "px")
-            .style("top",   event.pageY - 32 + "px")
+            .style("left", event.pageX + 12 + "px")
+            .style("top", event.pageY - 32 + "px")
+            .style("background", t.tooltipBg)
+            .style("border", `1px solid ${t.tooltipBorder}`)
+            .style("color", t.tooltipText)
             .html(`
               <span style="font-size:16px">${d.flag}</span>
-              <strong style="color:#fff;margin-left:6px">${d.name}</strong><br/>
+              <strong style="color:${t.tooltipText};margin-left:6px">${d.name}</strong><br/>
               <span style="color:${s.color};font-size:11px">
                 ${s.label}: ${fmtRaw(s.key, d.raw)}
               </span><br/>
-              <span style="color:#6b7280;font-size:10px">
+              <span style="color:${t.muted};font-size:10px">
                 Index: ${d.normalized.toFixed(1)} / 100
               </span>
             `);
@@ -186,14 +192,14 @@ export default function LineChart({ data = [], title }) {
         .attr("stroke", s.color).attr("stroke-width", 2);
       svg.append("circle")
         .attr("cx", iW + 26).attr("cy", legendY + 8)
-        .attr("r",  3).attr("fill", s.color);
+        .attr("r", 3).attr("fill", s.color);
       svg.append("text")
         .attr("x", iW + 42).attr("y", legendY + 12)
-        .attr("fill", "#9ca3af").attr("font-size", "12px")
+        .attr("fill", t.axisText).attr("font-size", "12px")
         .text(s.label);
     });
 
-  }, [data]);
+  }, [data, theme]);
 
   return (
     <div className="card w-full overflow-x-auto">
@@ -207,7 +213,6 @@ export default function LineChart({ data = [], title }) {
         id="linechart-tooltip"
         style={{
           display: "none", position: "fixed", pointerEvents: "none",
-          background: "#0d1117", border: "1px solid #1f2937",
           borderRadius: "8px", padding: "10px 14px",
           fontFamily: "monospace", zIndex: 9999, lineHeight: "1.8",
         }}
@@ -225,7 +230,7 @@ function fmtRaw(key, val) {
     if (val >= 1e6) return (val / 1e6).toFixed(1) + "M";
     return val.toLocaleString();
   }
-  if (key === "density")    return val.toFixed(1) + " /km²";
+  if (key === "density") return val.toFixed(1) + " /km²";
   if (key === "covidCases") {
     if (val >= 1e6) return (val / 1e6).toFixed(1) + "M";
     if (val >= 1e3) return (val / 1e3).toFixed(0) + "K";

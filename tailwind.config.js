@@ -28,9 +28,9 @@ export default {
       },
       backgroundImage: {
         "aurora-dark":
-          "radial-gradient(circle at 15% 10%, rgba(0,229,160,0.12), transparent 45%), radial-gradient(circle at 85% 0%, rgba(180,180,249,0.10), transparent 40%), radial-gradient(circle at 50% 100%, rgba(0,229,160,0.06), transparent 50%)",
+          "radial-gradient(circle at 15% 10%, rgba(0,229,160,0.06), transparent 45%), radial-gradient(circle at 85% 0%, rgba(180,180,249,0.05), transparent 40%)",
         "aurora-light":
-          "radial-gradient(circle at 15% 10%, rgba(0,150,110,0.07), transparent 45%), radial-gradient(circle at 85% 0%, rgba(99,91,219,0.06), transparent 40%)",
+          "radial-gradient(circle at 15% 10%, rgba(0,150,110,0.04), transparent 45%), radial-gradient(circle at 85% 0%, rgba(99,91,219,0.03), transparent 40%)",
       },
     },
   },

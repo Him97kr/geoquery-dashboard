@@ -8,39 +8,45 @@
    :root = light mode default, .dark overrides for dark mode.
    ────────────────────────────────────────────────────────────────────── */
 :root {
-  --color-bg:      250 250 252;
+  --color-bg: 250 250 252;
   --color-surface: 255 255 255;
-  --color-card:    255 255 255;
-  --color-border:  226 232 240;
-  --color-teal:    0 150 110;     /* deeper teal — keeps contrast on white */
-  --color-teal-d:  0 110 80;
-  --color-lav:     99 91 219;     /* deeper indigo-lavender for contrast */
-  --color-muted:   100 116 139;
-  --color-ink:     15 23 42;
+  --color-card: 255 255 255;
+  --color-border: 226 232 240;
+  --color-teal: 0 150 110;
+  /* deeper teal — keeps contrast on white */
+  --color-teal-d: 0 110 80;
+  --color-lav: 99 91 219;
+  /* deeper indigo-lavender for contrast */
+  --color-muted: 100 116 139;
+  --color-ink: 15 23 42;
 
   --card-alpha: 0.9;
   --card-blur: 0px;
-  --card-shadow: 0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.06);
+  --card-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
 }
 
 .dark {
-  --color-bg:      8 9 13;
+  --color-bg: 8 9 13;
   --color-surface: 13 17 23;
-  --color-card:    17 20 28;
-  --color-border:  255 255 255;   /* used at low alpha — see .card below */
-  --color-teal:    0 229 160;
-  --color-teal-d:  0 160 110;
-  --color-lav:     180 180 249;
-  --color-muted:   139 147 167;
-  --color-ink:     255 255 255;
+  --color-card: 17 20 28;
+  --color-border: 255 255 255;
+  /* used at low alpha — see .card below */
+  --color-teal: 0 229 160;
+  --color-teal-d: 0 160 110;
+  --color-lav: 180 180 249;
+  --color-muted: 139 147 167;
+  --color-ink: 255 255 255;
 
-  --card-alpha: 0.55;
-  --card-blur: 16px;
-  --card-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 32px rgba(0,0,0,0.35);
+  --card-alpha: 0.65;
+  --card-blur: 10px;
+  --card-shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset, 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 @layer base {
-  html { background: rgb(var(--color-bg)); }
+  html {
+    background: rgb(var(--color-bg));
+  }
+
   body {
     @apply text-ink font-sans antialiased;
     background-color: rgb(var(--color-bg));
@@ -48,15 +54,32 @@
     background-attachment: fixed;
     transition: background-color 0.25s ease, color 0.25s ease;
   }
-  .dark body { --aurora-image: theme(backgroundImage.aurora-dark); }
-  body:not(.dark) { --aurora-image: theme(backgroundImage.aurora-light); }
 
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: rgb(var(--color-surface)); }
-  ::-webkit-scrollbar-thumb { background: rgb(var(--color-border) / 0.4); border-radius: 9999px; }
+  .dark body {
+    --aurora-image: theme(backgroundImage.aurora-dark);
+  }
+
+  body:not(.dark) {
+    --aurora-image: theme(backgroundImage.aurora-light);
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgb(var(--color-surface));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgb(var(--color-border) / 0.4);
+    border-radius: 9999px;
+  }
 }
 
 @layer components {
+
   /* ── Glass card — the core visual signature of this theme ── */
   .card {
     background-color: rgb(var(--color-card) / var(--card-alpha));
@@ -66,27 +89,19 @@
     backdrop-filter: blur(var(--card-blur));
     box-shadow: var(--card-shadow);
   }
-  .dark .card { border-color: rgb(255 255 255 / 0.07); }
-  html:not(.dark) .card { border-color: rgb(var(--color-border)); }
 
-  /* Subtle corner glow accent, dark mode only — echoes the aurora background */
-  .dark .card-glow {
-    position: relative;
-    overflow: hidden;
+  .dark .card {
+    border-color: rgb(255 255 255 / 0.07);
   }
-  .dark .card-glow::before {
-    content: "";
-    position: absolute;
-    top: -30%; right: -30%;
-    width: 90px; height: 90px;
-    background: radial-gradient(circle, rgba(0,229,160,0.16), transparent 70%);
-    border-radius: 50%;
-    pointer-events: none;
+
+  html:not(.dark) .card {
+    border-color: rgb(var(--color-border));
   }
 
   .stat-value {
     @apply font-display text-2xl font-bold text-teal;
   }
+
   .stat-label {
     @apply text-xs text-muted uppercase tracking-widest;
   }
@@ -96,13 +111,17 @@
     background: linear-gradient(135deg, rgb(var(--color-teal)), rgb(var(--color-teal-d)));
     color: rgb(var(--color-bg));
   }
-  .btn-primary:hover { filter: brightness(1.08); }
+
+  .btn-primary:hover {
+    filter: brightness(1.08);
+  }
 
   .btn-ghost {
     @apply border font-mono text-sm px-4 py-2 rounded-lg transition-colors;
     border-color: rgb(var(--color-border) / 0.6);
     color: rgb(var(--color-muted));
   }
+
   .btn-ghost:hover {
     border-color: rgb(var(--color-teal) / 0.5);
     color: rgb(var(--color-teal));
@@ -117,6 +136,7 @@
     @apply font-display font-bold tracking-tight;
     color: rgb(var(--color-ink));
   }
+
   .accent-text {
     background: linear-gradient(90deg, rgb(var(--color-teal)), rgb(var(--color-lav)));
     -webkit-background-clip: text;

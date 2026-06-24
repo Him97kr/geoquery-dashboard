@@ -14,7 +14,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className="fixed top-3 left-3 right-3 z-50 h-14 flex items-center px-5 gap-4 rounded-2xl border backdrop-blur-glass"
+      className="fixed top-0 left-3 right-3 z-50 h-14 flex items-center px-5 gap-4 rounded-2xl border backdrop-blur-glass"
       style={{
         background: "rgb(var(--color-card) / var(--card-alpha))",
         borderColor: "rgb(var(--color-border) / 0.08)",
