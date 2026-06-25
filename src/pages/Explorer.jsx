@@ -37,7 +37,8 @@ export default function Explorer() {
 
   const countries = useMemo(() => {
     if (!rawData) return [];
-    return [...rawData].sort((a, b) => {
+    const filteredData = rawData.filter(c => c.name && c.code && c.flag);
+    return [...filteredData].sort((a, b) => {
       let aVal = sortBy === "name" ? a.name : (a[sortBy] ?? 0);
       let bVal = sortBy === "name" ? b.name : (b[sortBy] ?? 0);
       if (sortDir === "asc") return aVal > bVal ? 1 : -1;
@@ -55,11 +56,6 @@ export default function Explorer() {
   function toggleSort(key) {
     if (sortBy === key) dispatch(setSortDir(sortDir === "desc" ? "asc" : "desc"));
     else { dispatch(setSortBy(key)); dispatch(setSortDir("desc")); }
-  }
-
-  const checkValidCountry = (c) => {
-    if (region) return c.name && c.code && c.flag && c.region === region;
-    return c.name && c.code && c.flag;
   }
 
   return (
@@ -124,7 +120,7 @@ export default function Explorer() {
         ? <Loader text="Fetching countries..." />
         : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {countries.map((c, k) => checkValidCountry(c) && <CountryCard key={k + c.code} country={c} />)}
+            {countries.map((c, k) => <CountryCard key={k + c.code} country={c} />)}
             {countries.length === 0 && (
               <p className="text-muted col-span-4 text-center py-16">No countries found.</p>
             )}
