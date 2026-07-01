@@ -1,8 +1,8 @@
-// src/components/charts/TreemapChart.jsx
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { selectTheme } from "../../features/ui/uiSlice";
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 import { readThemeColors, getOrCreateTooltip } from "./chartTheme";
 
 function fmt(n) {
@@ -17,6 +17,7 @@ export default function TreemapChart({ data = [], title }) {
   // data: [{ name, flag, population, region, code }]
   const svgRef = useRef(null);
   const theme = useSelector(selectTheme);
+  const width = useContainerWidth(svgRef);
 
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
@@ -25,7 +26,7 @@ export default function TreemapChart({ data = [], title }) {
     getOrCreateTooltip("treemap-tooltip");
 
     const container = svgRef.current.parentElement;
-    const W = container.clientWidth || 800;
+    const W = width || svgRef.current.parentElement.clientWidth || 800;
     const H = 480;
 
     d3.select(svgRef.current).selectAll("*").remove();
@@ -128,7 +129,7 @@ export default function TreemapChart({ data = [], title }) {
       }
     });
 
-  }, [data, theme]);
+  }, [data, width, theme]);
 
   return (
     <div className="card w-full overflow-hidden">

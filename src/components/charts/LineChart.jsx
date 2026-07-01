@@ -1,33 +1,56 @@
-// src/components/charts/LineChart.jsx
-// Shows 3 normalized lines (Population, Density, COVID Cases)
-// for top N populated countries on the same scale (0–100 index)
-import { useEffect, useRef } from "react";
+// Shows up to 3 normalized lines (Population, Density, COVID Cases)
+// for top N populated countries on the same scale (0–100 index).
+// Each line can be toggled on/off via the legend buttons above the chart.
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { selectTheme } from "../../features/ui/uiSlice";
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 import { readThemeColors, getOrCreateTooltip } from "./chartTheme";
+
+const ALL_LINES = [
+  { key: "population", label: "Population" },
+  { key: "density", label: "Density" },
+  { key: "covidCases", label: "COVID Cases" },
+];
 
 export default function LineChart({ data = [], title }) {
   // data: [{ name, flag, population, density, covidCases }]
-  // All values normalized 0-100 so 3 metrics visible on same axis
+  // All values normalized 0-100 so multiple metrics stay comparable on the same axis
   const svgRef = useRef(null);
   const theme = useSelector(selectTheme);
+  const width = useContainerWidth(svgRef);
+
+  // Per-metric visibility — all on by default
+  const [visible, setVisible] = useState({
+    population: true,
+    density: true,
+    covidCases: true,
+  });
+
+  function toggleSeries(key) {
+    setVisible((prev) => {
+      const next = { ...prev, [key]: !prev[key] };
+      // Don't allow turning off the last remaining line — leaves an empty chart
+      const anyVisible = Object.values(next).some(Boolean);
+      return anyVisible ? next : prev;
+    });
+  }
 
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
     const t = readThemeColors();
     getOrCreateTooltip("linechart-tooltip");
 
-    const LINES = [
-      { key: "population", label: "Population", color: t.teal },
-      { key: "density", label: "Density", color: t.lav },
-      { key: "covidCases", label: "COVID Cases", color: t.red },
-    ];
+    const COLORS = { population: t.teal, density: t.lav, covidCases: t.red };
+    const LINES = ALL_LINES
+      .filter((l) => visible[l.key])
+      .map((l) => ({ ...l, color: COLORS[l.key] }));
 
     const container = svgRef.current.parentElement;
-    const W = container.clientWidth || 700;
+    const W = width || svgRef.current.parentElement.clientWidth || 700;
     const H = 420;
-    const margin = { top: 24, right: 160, bottom: 110, left: 50 };
+    const margin = { top: 24, right: 20, bottom: 110, left: 50 };
     const iW = W - margin.left - margin.right;
     const iH = H - margin.top - margin.bottom;
 
@@ -39,16 +62,19 @@ export default function LineChart({ data = [], title }) {
       .append("g")
       .attr("transform", `translate(${margin.left},${margin.top})`);
 
+    if (!LINES.length) return;
+
     // Normalize each metric 0–100
     const normalize = (key) => {
       const vals = data.map((d) => d[key] || 0);
       const min = d3.min(vals);
       const max = d3.max(vals) || 1;
+      const span = max - min || 1;
       return data.map((d) => ({
         name: d.name,
         flag: d.flag,
         raw: d[key] || 0,
-        normalized: ((d[key] || 0) - min) / (max - min) * 100,
+        normalized: ((d[key] || 0) - min) / span * 100,
       }));
     };
 
@@ -147,7 +173,7 @@ export default function LineChart({ data = [], title }) {
         .attr("stroke-dashoffset", 0);
 
       // Dots
-      svg.selectAll(`.dot-${si}`)
+      svg.selectAll(`.dot-${s.key}`)
         .data(s.points)
         .join("circle")
         .attr("cx", (d) => x(d.name))
@@ -186,30 +212,47 @@ export default function LineChart({ data = [], title }) {
         .transition()
         .delay(900 + si * 150)
         .attr("opacity", 1);
-
-      // Legend
-      const legendY = si * 22;
-      svg.append("line")
-        .attr("x1", iW + 16).attr("y1", legendY + 8)
-        .attr("x2", iW + 36).attr("y2", legendY + 8)
-        .attr("stroke", s.color).attr("stroke-width", 2);
-      svg.append("circle")
-        .attr("cx", iW + 26).attr("cy", legendY + 8)
-        .attr("r", 3).attr("fill", s.color);
-      svg.append("text")
-        .attr("x", iW + 42).attr("y", legendY + 12)
-        .attr("fill", t.axisText).attr("font-size", "12px")
-        .text(s.label);
     });
 
-  }, [data, theme]);
+  }, [data, width, theme, visible]);
 
   return (
     <div className="card w-full overflow-x-auto">
-      {title && <h3 className="text-sm font-semibold text-ink mb-4">{title}</h3>}
+      <div className="flex items-start justify-between flex-wrap gap-3 mb-2">
+        {title && <h3 className="text-sm font-semibold text-ink">{title}</h3>}
+
+        {/* Series toggle legend */}
+        <div className="flex items-center gap-2 flex-wrap">
+          {ALL_LINES.map(({ key, label }) => {
+            const t = readThemeColors();
+            const color = { population: t.teal, density: t.lav, covidCases: t.red }[key];
+            const isOn = visible[key];
+            return (
+              <button
+                key={key}
+                type="button"
+                aria-pressed={isOn}
+                onClick={() => toggleSeries(key)}
+                className="badge transition-colors inline-flex items-center gap-1.5"
+                style={
+                  isOn
+                    ? { borderColor: `${color}66`, color, background: `${color}1a` }
+                    : { borderColor: "rgb(var(--color-border) / 0.5)", color: "rgb(var(--color-muted))", opacity: 0.6 }
+                }
+              >
+                <span
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: isOn ? color : "rgb(var(--color-muted))" }}
+                />
+                {label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       <p className="text-xs text-muted mb-3 font-mono">
-        All metrics normalized to 0–100 index for visual comparison. Hover dots for raw values.
+        All metrics normalized to 0–100 index for visual comparison. Hover dots for raw values. Click a legend badge to show/hide that line.
       </p>
 
       <svg ref={svgRef} />

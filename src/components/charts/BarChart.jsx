@@ -1,8 +1,8 @@
-// src/components/charts/BarChart.jsx
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { selectTheme } from "../../features/ui/uiSlice";
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 import { readThemeColors } from "./chartTheme";
 
 function fmt(n) {
@@ -15,12 +15,13 @@ function fmt(n) {
 export default function BarChart({ data = [], valueKey = "population", labelKey = "name", color = "#00e5a0", title }) {
   const svgRef = useRef(null);
   const theme = useSelector(selectTheme);
+  const width = useContainerWidth(svgRef);
 
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
     const t = readThemeColors();
     const container = svgRef.current.parentElement;
-    const W = container.clientWidth || 600;
+    const W = width || svgRef.current.parentElement.clientWidth || 600;
     const H = 420;
     const margin = { top: 20, right: 20, bottom: 100, left: 70 };
     const iW = W - margin.left - margin.right;
@@ -108,7 +109,7 @@ export default function BarChart({ data = [], valueKey = "population", labelKey 
       .delay((_, i) => i * 30 + 600)
       .attr("opacity", 1);
 
-  }, [data, valueKey, labelKey, color, theme]);
+  }, [data, width, valueKey, labelKey, color, theme]);
 
   return (
     <div className="card w-full overflow-x-auto">

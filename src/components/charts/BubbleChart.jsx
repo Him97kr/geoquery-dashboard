@@ -1,14 +1,15 @@
-// src/components/charts/BubbleChart.jsx
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import * as d3 from "d3";
 import { selectTheme } from "../../features/ui/uiSlice";
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 import { readThemeColors, getOrCreateTooltip } from "./chartTheme";
 
 export default function BubbleChart({ data = [], title }) {
   // data: [{ name, flag, x: density, y: population, r: covidCases, region }]
   const svgRef = useRef(null);
   const theme = useSelector(selectTheme);
+  const width = useContainerWidth(svgRef);
 
   useEffect(() => {
     if (!data.length || !svgRef.current) return;
@@ -16,7 +17,7 @@ export default function BubbleChart({ data = [], title }) {
     getOrCreateTooltip("bubble-tooltip");
 
     const container = svgRef.current.parentElement;
-    const W = container.clientWidth || 600;
+    const W = width || svgRef.current.parentElement.clientWidth || 600;
     const H = 420;
     const margin = { top: 20, right: 20, bottom: 50, left: 70 };
     const iW = W - margin.left - margin.right;
@@ -140,7 +141,7 @@ export default function BubbleChart({ data = [], title }) {
       .transition().delay(800)
       .attr("opacity", 1);
 
-  }, [data, theme]);
+  }, [data, width, theme]);
 
   return (
     <div className="card w-full overflow-x-auto">

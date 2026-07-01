@@ -1,8 +1,8 @@
-// src/components/charts/ChoroplethMap.jsx
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useQuery } from "@apollo/client";
 import { selectMapMetric, setMapMetric, selectTheme } from "../../features/ui/uiSlice";
+import { useContainerWidth } from "../../hooks/useContainerWidth";
 import { TOP_BY_COVID } from "../../apollo/queries";
 import * as d3 from "d3";
 import * as topojson from "topojson-client";
@@ -47,6 +47,7 @@ export default function ChoroplethMap({ countries = [] }) {
   const dispatch = useDispatch();
   const metric = useSelector(selectMapMetric);
   const theme = useSelector(selectTheme);
+  const width = useContainerWidth(svgRef);
   const [world, setWorld] = useState(null);
   const [hovered, setHovered] = useState(null);
 
@@ -92,7 +93,7 @@ export default function ChoroplethMap({ countries = [] }) {
     const t = readThemeColors();
 
     const container = svgRef.current.parentElement;
-    const W = container.clientWidth || 900;
+    const W = width || svgRef.current.parentElement.clientWidth || 900;
     const H = 460;
 
     d3.select(svgRef.current).selectAll("*").remove();
@@ -195,7 +196,7 @@ export default function ChoroplethMap({ countries = [] }) {
       .attr("stroke-width", 0.8);
 
     // ── Legend ──────────────────────────────────────────────────────────────
-    const lW = 180, lH = 10;
+    const lW = 140, lH = 10;
     const lX = W - lW - 16;
     const lY = H - 20;
 
@@ -219,7 +220,7 @@ export default function ChoroplethMap({ countries = [] }) {
       .attr("text-anchor", "end")
       .text("High");
 
-  }, [world, countries, metric, countryLookup, covidLookup, theme]);
+  }, [world, countries, metric, countryLookup, covidLookup, theme, width]);
 
   function fmtVal(c) {
     if (!c) return "";

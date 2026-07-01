@@ -1,35 +1,34 @@
-// src/pages/Rankings.jsx
 import { useSelector, useDispatch } from "react-redux";
 import { BarChart3, Circle, LayoutGrid, LineChart as LineChartIcon } from "lucide-react";
 import { selectTopPopulation, selectTopCovid } from "../features/countries/countriesSlice";
-import { selectRankLimit, setRankLimit }        from "../features/filters/filtersSlice";
-import { selectChartType, setChartType }        from "../features/ui/uiSlice";
-import { useTopByPopulation, useTopByCovid }    from "../hooks/useCountryData";
-import BarChart        from "../components/charts/BarChart";
-import BubbleChart     from "../components/charts/BubbleChart";
-import TreemapChart    from "../components/charts/TreemapChart";
-import LineChart       from "../components/charts/LineChart";
-import Loader          from "../components/ui/Loader";
-import { useMemo }     from "react";
+import { selectRankLimit, setRankLimit } from "../features/filters/filtersSlice";
+import { selectChartType, setChartType } from "../features/ui/uiSlice";
+import { useTopByPopulation, useTopByCovid } from "../hooks/useCountryData";
+import BarChart from "../components/charts/BarChart";
+import BubbleChart from "../components/charts/BubbleChart";
+import TreemapChart from "../components/charts/TreemapChart";
+import LineChart from "../components/charts/LineChart";
+import Loader from "../components/ui/Loader";
+import { useMemo } from "react";
 
 const CHART_TYPES = [
-  { key: "bar",     label: "Bar",          Icon: BarChart3 },
-  { key: "bubble",  label: "Bubble",       Icon: Circle },
-  { key: "treemap", label: "Treemap",      Icon: LayoutGrid },
-  { key: "line",    label: "Multi-Metric", Icon: LineChartIcon },
+  { key: "bar", label: "Bar", Icon: BarChart3 },
+  { key: "bubble", label: "Bubble", Icon: Circle },
+  { key: "treemap", label: "Treemap", Icon: LayoutGrid },
+  { key: "line", label: "Multi-Metric", Icon: LineChartIcon },
 ];
 
 const LIMITS = [10, 15, 20];
 
 export default function Rankings() {
-  const dispatch      = useDispatch();
-  const limit         = useSelector(selectRankLimit);
-  const chartType     = useSelector(selectChartType);
+  const dispatch = useDispatch();
+  const limit = useSelector(selectRankLimit);
+  const chartType = useSelector(selectChartType);
   const topPopulation = useSelector(selectTopPopulation);
-  const topCovid      = useSelector(selectTopCovid);
+  const topCovid = useSelector(selectTopCovid);
 
   const { loading: popLoading } = useTopByPopulation(20); // always fetch 20 for line chart
-  const { loading: covLoading } = useTopByCovid(20);
+  const { loading: covLoading } = useTopByCovid(250);
 
   // Bubble — merge density+population with covid cases
   const bubbleData = useMemo(() => {
@@ -38,11 +37,11 @@ export default function Rankings() {
     return topPopulation
       .filter((c) => c.density > 0)
       .map((c) => ({
-        name:   c.name,
-        flag:   c.flag,
-        x:      c.density,
-        y:      c.population,
-        r:      covidMap[c.code] || 0,
+        name: c.name,
+        flag: c.flag,
+        x: c.density,
+        y: c.population,
+        r: covidMap[c.code] || 0,
         region: c.region,
       }));
   }, [topPopulation, topCovid]);
@@ -55,10 +54,10 @@ export default function Rankings() {
     return topPopulation
       .slice(0, 20)
       .map((c) => ({
-        name:       c.name,
-        flag:       c.flag || "",
+        name: c.name,
+        flag: c.flag || "",
         population: c.population || 0,
-        density:    c.density    || 0,
+        density: c.density || 0,
         covidCases: covidMap[c.code] || 0,
       }));
   }, [topPopulation, topCovid]);
@@ -66,7 +65,7 @@ export default function Rankings() {
   const loading = popLoading || covLoading;
 
   // Displayed top N — sliced from fetched 20
-  const displayedPop   = topPopulation.slice(0, limit);
+  const displayedPop = topPopulation.slice(0, limit);
   const displayedCovid = topCovid.slice(0, limit);
 
   return (
@@ -90,11 +89,10 @@ export default function Rankings() {
               <button
                 key={key}
                 onClick={() => dispatch(setChartType(key))}
-                className={`badge transition-colors inline-flex items-center gap-1.5 ${
-                  chartType === key
-                    ? "border-teal text-teal bg-teal/10"
-                    : "border-border text-muted hover:border-teal/40"
-                }`}
+                className={`badge transition-colors inline-flex items-center gap-1.5 ${chartType === key
+                  ? "border-teal text-teal bg-teal/10"
+                  : "border-border text-muted hover:border-teal/40"
+                  }`}
               >
                 <Icon size={13} strokeWidth={1.75} /> {label}
               </button>
@@ -108,11 +106,10 @@ export default function Rankings() {
                 <button
                   key={l}
                   onClick={() => dispatch(setRankLimit(l))}
-                  className={`badge transition-colors ${
-                    limit === l
-                      ? "border-lav text-lav bg-lav/10"
-                      : "border-border text-muted"
-                  }`}
+                  className={`badge transition-colors ${limit === l
+                    ? "border-lav text-lav bg-lav/10"
+                    : "border-border text-muted"
+                    }`}
                 >
                   Top {l}
                 </button>
@@ -177,9 +174,9 @@ export default function Rankings() {
             {chartType === "line" && (
               lineData.length > 0
                 ? <LineChart
-                    data={lineData}
-                    title="Top 20 Populated Countries — Population vs Density vs COVID Cases (normalized 0–100)"
-                  />
+                  data={lineData}
+                  title="Top 20 Populated Countries — Population vs Density vs COVID Cases (normalized 0–100)"
+                />
                 : <Loader text="Merging metrics..." />
             )}
 
