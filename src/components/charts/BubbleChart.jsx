@@ -102,8 +102,8 @@ export default function BubbleChart({ data = [], title }) {
         d3.select(this).attr("opacity", 1).attr("stroke-width", 2);
         d3.select("#bubble-tooltip")
           .style("display", "block")
-          .style("left", event.pageX + 12 + "px")
-          .style("top", event.pageY - 28 + "px")
+          .style("left", event.clientX + 12 + "px")
+          .style("top", event.clientY - 28 + "px")
           .style("background", t.tooltipBg)
           .style("border", `1px solid ${t.tooltipBorder}`)
           .style("color", t.tooltipText)

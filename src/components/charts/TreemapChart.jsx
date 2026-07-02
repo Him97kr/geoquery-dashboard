@@ -65,8 +65,8 @@ export default function TreemapChart({ data = [], title }) {
         d3.select(this).attr("opacity", 1);
         d3.select("#treemap-tooltip")
           .style("display", "block")
-          .style("left", event.pageX + 12 + "px")
-          .style("top", event.pageY - 28 + "px")
+          .style("left", event.clientX + 12 + "px")
+          .style("top", event.clientY - 28 + "px")
           .style("background", t.tooltipBg)
           .style("border", `1px solid ${t.tooltipBorder}`)
           .style("color", t.tooltipText)

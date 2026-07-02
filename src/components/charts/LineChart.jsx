@@ -143,9 +143,6 @@ export default function LineChart({ data = [], title }) {
         .text(d.name.length > 12 ? d.name.slice(0, 11) + "…" : d.name);
     });
 
-    // Tooltip
-    const tooltipEl = d3.select("#linechart-tooltip");
-
     // Draw lines + dots per series
     const lineGen = d3.line()
       .x((d) => x(d.name))
@@ -185,10 +182,10 @@ export default function LineChart({ data = [], title }) {
         .attr("opacity", 0)
         .on("mouseenter", function (event, d) {
           d3.select(this).attr("r", 6);
-          tooltipEl
+          d3.select("#linechart-tooltip")
             .style("display", "block")
-            .style("left", event.pageX + 12 + "px")
-            .style("top", event.pageY - 32 + "px")
+            .style("left", event.clientX + 12 + "px")
+            .style("top", event.clientY - 32 + "px")
             .style("background", t.tooltipBg)
             .style("border", `1px solid ${t.tooltipBorder}`)
             .style("color", t.tooltipText)
@@ -207,7 +204,7 @@ export default function LineChart({ data = [], title }) {
         })
         .on("mouseleave", function () {
           d3.select(this).attr("r", 4);
-          tooltipEl.style("display", "none");
+          d3.select("#linechart-tooltip").style("display", "none");
         })
         .transition()
         .delay(900 + si * 150)
