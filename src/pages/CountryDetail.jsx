@@ -1,5 +1,5 @@
 // src/pages/CountryDetail.jsx
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import { useDispatch } from "react-redux";
 import {
@@ -32,6 +32,7 @@ export default function CountryDetail() {
   const { code } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const { data, loading, error } = useQuery(GET_COUNTRY, {
     variables: { code: code ?? null, name: null },
