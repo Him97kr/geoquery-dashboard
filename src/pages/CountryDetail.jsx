@@ -39,6 +39,14 @@ export default function CountryDetail() {
     fetchPolicy: "network-only",
   });
 
+  function handleBack() {
+    if (location.key !== "default") {
+      navigate(-1);
+    } else {
+      navigate("/explorer");
+    }
+  }
+
   const country = data?.country;
 
   useEffect(() => {
@@ -64,7 +72,7 @@ export default function CountryDetail() {
     <div className="space-y-6 max-w-full">
       {/* Back + header */}
       <div>
-        <button onClick={() => navigate(-1)} className="text-muted hover:text-teal text-sm mb-3 flex items-center gap-1 transition-colors">
+        <button onClick={handleBack} className="text-muted hover:text-teal text-sm mb-3 flex items-center gap-1 transition-colors">
           <ArrowLeft size={14} strokeWidth={1.75} /> Back
         </button>
         <div className="flex items-center gap-4">
