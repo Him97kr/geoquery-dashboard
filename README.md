@@ -15,8 +15,8 @@
 | | URL |
 |---|---|
 | **Dashboard** | https://him97kr.github.io/geoquery-dashboard |
-| **GraphQL API** | https://geoquery-production.up.railway.app |
-| **GraphQL Playground** | https://geoquery-production.up.railway.app/playground |
+| **GraphQL API** | https://geoquery.onrender.com |
+| **GraphQL Playground** | https://geoquery.onrender.com/playground |
 
 ---
 
@@ -99,7 +99,7 @@ Open `http://localhost:3000/geoquery-dashboard`
 
 ```bash
 # Set production API URL
-echo "VITE_GRAPHQL_URL=https://geoquery-production.up.railway.app/graphql" > .env.production
+echo "VITE_GRAPHQL_URL=https://geoquery.onrender.com/graphql" > .env.production
 
 # Build and deploy
 npm run deploy
@@ -115,7 +115,7 @@ Redux Store
 ├── filters    — search, region, sort column, sort direction, rank limit
 └── ui         — active chart type, map metric
 
-Apollo Client  →  GeoQuery GraphQL API (Railway)
+Apollo Client  →  GeoQuery GraphQL API (Render)
 └── Queries: country, countries, searchCountries,
              globalStats, topByPopulation, topByCovid,
              countriesWithOutbreaks
