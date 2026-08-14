@@ -7,6 +7,7 @@
 [![Apollo](https://img.shields.io/badge/Apollo_Client-3.9-311C87?logo=apollographql)](https://apollographql.com)
 [![D3](https://img.shields.io/badge/D3.js-7.0-F9A03C?logo=d3dotjs)](https://d3js.org)
 [![Tailwind](https://img.shields.io/badge/Tailwind_CSS-3.4-38BDF8?logo=tailwindcss)](https://tailwindcss.com)
+[![Tests](https://img.shields.io/badge/Tests-Jest_%2B_Enzyme-C21325?logo=jest)](https://jestjs.io)
 
 ---
 
@@ -95,6 +96,18 @@ Open `http://localhost:3000/geoquery-dashboard`
 
 ---
 
+## 🧪 Testing
+
+Unit and component tests run on **Jest + Enzyme**, covering Redux slices, hooks, D3 charts, and pages. Test files live under `src/tests/`, mirroring the `src/` layout.
+
+```bash
+npm test              # run once
+npm run test:watch    # watch mode
+npm run test:coverage # with coverage report
+```
+
+---
+
 ## 🚢 Deploy to GitHub Pages
 
 ```bash
@@ -142,6 +155,7 @@ D3.js Charts
 | React Router v6 | Client-side routing |
 | Tailwind CSS v3 | Utility-first dark theme styling |
 | Vite | Build tool |
+| Jest + Enzyme | Unit & component testing |
 
 ---
 
